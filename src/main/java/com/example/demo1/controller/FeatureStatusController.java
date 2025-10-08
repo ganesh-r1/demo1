@@ -71,7 +71,6 @@ public class FeatureStatusController {
         }
         
         config.put("ui_config", uiConfig);
-        
         // Feature capabilities
         Map<String, Object> capabilities = new HashMap<>();
         capabilities.put("document_processing", docFeeEnabled ? "ENHANCED" : "STANDARD");
