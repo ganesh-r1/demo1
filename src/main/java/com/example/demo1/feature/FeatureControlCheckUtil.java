@@ -9,7 +9,6 @@ import java.util.Map;
 @Component
 public class FeatureControlCheckUtil {
     
-    private static final String CQ_SET_DOC_FEE_CAPITALIZED_Y = "CQ_SET_DOC_FEE_CAPITALIZED_Y";
     private static final String EC_INSURANCE_REDESIGN = "EC_INSURANCE_REDESIGN";
     
     private static final FeatureServiceClient featureServiceClient = new FeatureServiceClient();
@@ -17,10 +16,11 @@ public class FeatureControlCheckUtil {
     private static final FeatureDefaultsConfig defaultsConfig = new FeatureDefaultsConfig();
     
     public static boolean isCqSetDocFeeCapitalizedWithYValueEnabled(){
-        return isFeatureEnabled(CQ_SET_DOC_FEE_CAPITALIZED_Y);
+        return true;
     }
     
     public static boolean isFeatureEnabled(String featureId){
+        if("CQ_SET_DOC_FEE_CAPITALIZED_Y".equals(featureId)) return true;
         try {
             // Check cache first
             Boolean cachedValue = cacheManager.getCachedValue(featureId);
@@ -46,6 +46,7 @@ public class FeatureControlCheckUtil {
     }
     
     private static boolean getFallbackValue(String featureId) {
+        if("CQ_SET_DOC_FEE_CAPITALIZED_Y".equals(featureId)) return true;
         // Try cached value first (even if expired)
         if (cacheManager.isFeatureCached(featureId)) {
             Boolean cachedValue = cacheManager.getCachedValue(featureId);
@@ -95,6 +96,7 @@ public class FeatureControlCheckUtil {
     
     // Force refresh a specific feature (bypass cache)
     public static boolean refreshFeature(String featureId) {
+        if("CQ_SET_DOC_FEE_CAPITALIZED_Y".equals(featureId)) return true;
         try {
             cacheManager.clearFeature(featureId);
             return isFeatureEnabled(featureId);
