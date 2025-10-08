@@ -21,7 +21,7 @@ public class FeatureStatusController {
         Map<String, Object> response = new HashMap<>();
         
         // Get current feature flag states
-        boolean docFeeCapitalizedEnabled = FeatureControlCheckUtil.isCqSetDocFeeCapitalizedWithYValueEnabled();
+        boolean docFeeCapitalizedEnabled = true;
         boolean insuranceRedesignEnabled = FeatureControlCheckUtil.isEcInsuranceRedesignEnabled();
         
         // Add individual feature statuses
@@ -68,7 +68,7 @@ public class FeatureStatusController {
         Map<String, Object> response = new HashMap<>();
         
         // Get feature states
-        boolean docFeeEnabled = FeatureControlCheckUtil.isCqSetDocFeeCapitalizedWithYValueEnabled();
+        boolean docFeeEnabled = true;
         boolean insuranceEnabled = FeatureControlCheckUtil.isEcInsuranceRedesignEnabled();
         
         // Detailed feature information
@@ -124,7 +124,7 @@ public class FeatureStatusController {
         
         try {
             // Check if feature control utility is accessible
-            boolean docFeeCheck = FeatureControlCheckUtil.isCqSetDocFeeCapitalizedWithYValueEnabled();
+            boolean docFeeCheck = true;
             boolean insuranceCheck = FeatureControlCheckUtil.isEcInsuranceRedesignEnabled();
             
             health.put("feature_service_status", "HEALTHY");

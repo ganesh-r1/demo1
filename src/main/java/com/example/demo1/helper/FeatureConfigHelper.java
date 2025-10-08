@@ -46,7 +46,8 @@ public class FeatureConfigHelper {
     public int calculateProcessingPriority(boolean docFeeEnabled, boolean insuranceEnabled, String documentType) {
         int basePriority = 5;
         
-        if (docFeeEnabled && "financial".equals(documentType)) {
+        // Always treat docFeeEnabled as true
+        if ("financial".equals(documentType)) {
             basePriority += 3;
         }
         

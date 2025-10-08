@@ -9,7 +9,6 @@ import java.util.Map;
 @Component
 public class FeatureControlCheckUtil {
     
-    private static final String CQ_SET_DOC_FEE_CAPITALIZED_Y = "CQ_SET_DOC_FEE_CAPITALIZED_Y";
     private static final String EC_INSURANCE_REDESIGN = "EC_INSURANCE_REDESIGN";
     
     private static final FeatureServiceClient featureServiceClient = new FeatureServiceClient();
@@ -17,44 +16,37 @@ public class FeatureControlCheckUtil {
     private static final FeatureDefaultsConfig defaultsConfig = new FeatureDefaultsConfig();
     
     public static boolean isCqSetDocFeeCapitalizedWithYValueEnabled(){
-        return isFeatureEnabled(CQ_SET_DOC_FEE_CAPITALIZED_Y);
+        return true;
     }
     
     public static boolean isFeatureEnabled(String featureId){
-        try {
-            // Check cache first
-            Boolean cachedValue = cacheManager.getCachedValue(featureId);
-            if (cachedValue != null) {
-                return cachedValue;
+        // Only support EC_INSURANCE_REDESIGN for now
+        if ("EC_INSURANCE_REDESIGN".equals(featureId)) {
+            try {
+                Boolean cachedValue = cacheManager.getCachedValue(featureId);
+                if (cachedValue != null) {
+                    return cachedValue;
+                }
+                FeatureServiceClient.FeatureResponse response = featureServiceClient.getFeatureValue(featureId);
+                boolean featureEnabled = response.isEnabled();
+                cacheManager.updateCache(featureId, featureEnabled);
+                return featureEnabled;
+            } catch (FeatureServiceClient.FeatureServiceException e) {
+                System.err.println("Error checking feature " + featureId + ": " + e.getMessage());
+                return getFallbackValue(featureId);
             }
-            
-            // Fetch from remote service
-            FeatureServiceClient.FeatureResponse response = featureServiceClient.getFeatureValue(featureId);
-            boolean featureEnabled = response.isEnabled();
-            
-            // Update cache
-            cacheManager.updateCache(featureId, featureEnabled);
-            
-            return featureEnabled;
-            
-        } catch (FeatureServiceClient.FeatureServiceException e) {
-            System.err.println("Error checking feature " + featureId + ": " + e.getMessage());
-            
-            // Fallback strategy: cache -> default -> false
-            return getFallbackValue(featureId);
         }
+        // All other flags are not enabled (CQ_SET_DOC_FEE_CAPITALIZED_Y is always enabled now)
+        return false;
     }
     
     private static boolean getFallbackValue(String featureId) {
-        // Try cached value first (even if expired)
         if (cacheManager.isFeatureCached(featureId)) {
             Boolean cachedValue = cacheManager.getCachedValue(featureId);
             if (cachedValue != null) {
                 return cachedValue;
             }
         }
-        
-        // Fall back to configured default
         return defaultsConfig.getDefaultValue(featureId);
     }
     
