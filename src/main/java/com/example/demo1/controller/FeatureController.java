@@ -18,7 +18,7 @@ public class FeatureController {
     
     @GetMapping("/features/status")
     public Map<String, Object> getFeatureStatus() {
-        // Get feature states and pass to helper
+        // CQ_SET_DOC_FEE_CAPITALIZED_Y is always enabled now
         boolean docFeeEnabled = true;
         boolean insuranceEnabled = FeatureControlCheckUtil.isEcInsuranceRedesignEnabled();
         

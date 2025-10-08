@@ -7,7 +7,8 @@ import org.springframework.stereotype.Service;
 public class DocumentFeeService {
     
     public double calculateDocumentFee(double baseAmount) {
-        return baseAmount * 1.15; // Always apply the multiplier as CQ_SET_DOC_FEE_CAPITALIZED_Y is always enabled
+        // CQ_SET_DOC_FEE_CAPITALIZED_Y is always enabled
+        return baseAmount * 1.15;
     }
     
     public String getDocumentFeeDisplayFormat(double fee) {

@@ -15,6 +15,7 @@ public class FeatureControlCheckUtil {
     private static final FeatureCacheManager cacheManager = new FeatureCacheManager();
     private static final FeatureDefaultsConfig defaultsConfig = new FeatureDefaultsConfig();
     
+    // CQ_SET_DOC_FEE_CAPITALIZED_Y is always enabled - method simplified
     public static boolean isCqSetDocFeeCapitalizedWithYValueEnabled(){
         return true;
     }
@@ -36,7 +37,7 @@ public class FeatureControlCheckUtil {
                 return getFallbackValue(featureId);
             }
         }
-        // All other flags are not enabled (CQ_SET_DOC_FEE_CAPITALIZED_Y is always enabled now)
+        // All other feature flags except CQ_SET_DOC_FEE_CAPITALIZED_Y -- treated as disabled (but CQ always true)
         return false;
     }
     

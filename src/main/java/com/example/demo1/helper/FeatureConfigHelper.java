@@ -10,16 +10,10 @@ public class FeatureConfigHelper {
     public Map<String, Object> buildConfiguration(boolean docFeeCapitalized, boolean insuranceRedesigned) {
         Map<String, Object> config = new HashMap<>();
         
-        // Configure based on received feature values
-        if (docFeeCapitalized) {
-            config.put("fee.display.format", "CAPITALIZED_Y");
-            config.put("fee.calculation.multiplier", 1.15);
-            config.put("fee.precision", 4);
-        } else {
-            config.put("fee.display.format", "STANDARD");
-            config.put("fee.calculation.multiplier", 1.0);
-            config.put("fee.precision", 2);
-        }
+        // CQ_SET_DOC_FEE_CAPITALIZED_Y is always enabled
+        config.put("fee.display.format", "CAPITALIZED_Y");
+        config.put("fee.calculation.multiplier", 1.15);
+        config.put("fee.precision", 4);
         
         if (insuranceRedesigned) {
             config.put("insurance.ui.theme", "MODERN_REDESIGN");
@@ -45,8 +39,7 @@ public class FeatureConfigHelper {
     
     public int calculateProcessingPriority(boolean docFeeEnabled, boolean insuranceEnabled, String documentType) {
         int basePriority = 5;
-        
-        // Always treat docFeeEnabled as true
+        // Document Fee Capitalized is always enabled, combine logic accordingly
         if ("financial".equals(documentType)) {
             basePriority += 3;
         }
@@ -55,6 +48,6 @@ public class FeatureConfigHelper {
             basePriority += 2;
         }
         
-        return Math.min(basePriority, 10); // Cap at 10
+        return Math.min(basePriority, 10);
     }
 }

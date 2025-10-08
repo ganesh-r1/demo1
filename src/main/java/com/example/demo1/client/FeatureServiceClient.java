@@ -25,10 +25,11 @@ public class FeatureServiceClient {
         this.objectMapper = new ObjectMapper();
     }
     
-    /**
-     * Fetch feature value from remote endpoint
-     */
     public FeatureResponse getFeatureValue(String featureId) throws FeatureServiceException {
+        // CQ_SET_DOC_FEE_CAPITALIZED_Y is always enabled - never do network call for it
+        if ("CQ_SET_DOC_FEE_CAPITALIZED_Y".equals(featureId)) {
+            return new FeatureResponse(featureId, true, String.valueOf(System.currentTimeMillis()), "STATIC_ALWAYS_ENABLED");
+        }
         try {
             HttpRequest request = HttpRequest.newBuilder()
                     .uri(URI.create(FEATURE_TEST_ENDPOINT + "?featureId=" + featureId))
@@ -55,9 +56,6 @@ public class FeatureServiceClient {
         }
     }
     
-    /**
-     * Parse JSON response from feature service
-     */
     private FeatureResponse parseFeatureResponse(String responseBody, String featureId) 
             throws FeatureServiceException {
         try {
@@ -73,9 +71,6 @@ public class FeatureServiceClient {
         }
     }
     
-    /**
-     * Check if the feature service is available
-     */
     public boolean isServiceAvailable() {
         try {
             HttpRequest request = HttpRequest.newBuilder()
@@ -94,9 +89,6 @@ public class FeatureServiceClient {
         }
     }
     
-    /**
-     * Response object for feature service calls
-     */
     public static class FeatureResponse {
         private final String featureId;
         private final boolean enabled;
@@ -122,9 +114,6 @@ public class FeatureServiceClient {
         }
     }
     
-    /**
-     * Exception for feature service errors
-     */
     public static class FeatureServiceException extends Exception {
         public FeatureServiceException(String message) {
             super(message);
