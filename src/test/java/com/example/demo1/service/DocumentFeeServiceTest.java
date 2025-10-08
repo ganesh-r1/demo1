@@ -19,7 +19,6 @@ public class DocumentFeeServiceTest {
     @Test
     void testCalculateDocumentFeeWithCapitalizedFeatureEnabled() {
         try (MockedStatic<FeatureControlCheckUtil> mockedStatic = Mockito.mockStatic(FeatureControlCheckUtil.class)) {
-            // Store feature state in variable for test
             boolean featureEnabled = true;
             mockedStatic.when(FeatureControlCheckUtil::isCqSetDocFeeCapitalizedWithYValueEnabled)
                       .thenReturn(featureEnabled);
@@ -46,29 +45,16 @@ public class DocumentFeeServiceTest {
     
     @Test
     void testInsuranceProcessingFeatureCheck() {
-        try (MockedStatic<FeatureControlCheckUtil> mockedStatic = Mockito.mockStatic(FeatureControlCheckUtil.class)) {
-            // Test both feature states
-            boolean insuranceEnabled = true;
-            mockedStatic.when(FeatureControlCheckUtil::isEcInsuranceRedesignEnabled)
-                      .thenReturn(insuranceEnabled);
-            
-            assertTrue(documentFeeService.isInsuranceProcessingEnabled());
-            
-            mockedStatic.when(FeatureControlCheckUtil::isEcInsuranceRedesignEnabled)
-                      .thenReturn(false);
-            
-            assertFalse(documentFeeService.isInsuranceProcessingEnabled());
-        }
+        // Remove EC_INSURANCE_REDESIGN mocking and assert
+        assertTrue(documentFeeService.isInsuranceProcessingEnabled());
     }
     
     @Test
     void testCombinedFeatureScenarios() {
         try (MockedStatic<FeatureControlCheckUtil> mockedStatic = Mockito.mockStatic(FeatureControlCheckUtil.class)) {
-            // Test scenario with both features enabled
             mockedStatic.when(FeatureControlCheckUtil::isCqSetDocFeeCapitalizedWithYValueEnabled)
                       .thenReturn(true);
-            mockedStatic.when(FeatureControlCheckUtil::isEcInsuranceRedesignEnabled)
-                      .thenReturn(true);
+            // Remove EC_INSURANCE_REDESIGN mocking
             
             double feeResult = documentFeeService.calculateDocumentFee(200.0);
             boolean insuranceResult = documentFeeService.isInsuranceProcessingEnabled();

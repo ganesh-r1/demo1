@@ -32,16 +32,13 @@ public class FeatureIntegrationTest {
             
             mockedStatic.when(FeatureControlCheckUtil::isCqSetDocFeeCapitalizedWithYValueEnabled)
                       .thenReturn(docFeeEnabled);
-            mockedStatic.when(FeatureControlCheckUtil::isEcInsuranceRedesignEnabled)
-                      .thenReturn(insuranceEnabled);
+            // Remove mocking of EC_INSURANCE_REDESIGN
             
-            // Test configuration helper with feature values
-            Map<String, Object> config = configHelper.buildConfiguration(docFeeEnabled, insuranceEnabled);
+            Map<String, Object> config = configHelper.buildConfiguration(docFeeEnabled, true);
             assertEquals("CAPITALIZED_Y", config.get("fee.display.format"));
             assertEquals("MODERN_REDESIGN", config.get("insurance.ui.theme"));
-            assertEquals("FULL_FEATURE_MODE", configHelper.determineSystemMode(docFeeEnabled, insuranceEnabled));
+            assertEquals("FULL_FEATURE_MODE", configHelper.determineSystemMode(docFeeEnabled, true));
             
-            // Test validation with both features
             List<String> errors = documentValidator.validateDocument("insurance", 50.0);
             assertTrue(errors.isEmpty());
         }
@@ -50,21 +47,17 @@ public class FeatureIntegrationTest {
     @Test
     void testPartialFeatureScenarios() {
         try (MockedStatic<FeatureControlCheckUtil> mockedStatic = Mockito.mockStatic(FeatureControlCheckUtil.class)) {
-            // Test with only doc fee enabled
             mockedStatic.when(FeatureControlCheckUtil::isCqSetDocFeeCapitalizedWithYValueEnabled)
                       .thenReturn(true);
-            mockedStatic.when(FeatureControlCheckUtil::isEcInsuranceRedesignEnabled)
-                      .thenReturn(false);
+            // Remove mocking of EC_INSURANCE_REDESIGN
             
             Map<String, Object> config = configHelper.buildConfiguration(true, false);
             assertEquals("CAPITALIZED_Y", config.get("fee.display.format"));
             assertEquals("CLASSIC", config.get("insurance.ui.theme"));
             
-            // Test with only insurance enabled
             mockedStatic.when(FeatureControlCheckUtil::isCqSetDocFeeCapitalizedWithYValueEnabled)
                       .thenReturn(false);
-            mockedStatic.when(FeatureControlCheckUtil::isEcInsuranceRedesignEnabled)
-                      .thenReturn(true);
+            // Remove mocking of EC_INSURANCE_REDESIGN
             
             config = configHelper.buildConfiguration(false, true);
             assertEquals("STANDARD", config.get("fee.display.format"));
@@ -77,15 +70,12 @@ public class FeatureIntegrationTest {
         try (MockedStatic<FeatureControlCheckUtil> mockedStatic = Mockito.mockStatic(FeatureControlCheckUtil.class)) {
             mockedStatic.when(FeatureControlCheckUtil::isCqSetDocFeeCapitalizedWithYValueEnabled)
                       .thenReturn(true);
-            mockedStatic.when(FeatureControlCheckUtil::isEcInsuranceRedesignEnabled)
-                      .thenReturn(true);
+            // Remove mocking of EC_INSURANCE_REDESIGN
             
-            // Test validation with legacy document type (should fail with both features)
             List<String> errors = documentValidator.validateDocument("legacy", 1000.0);
             assertTrue(errors.stream().anyMatch(error -> 
                 error.contains("Legacy documents not supported with both enhanced features enabled")));
             
-            // Test minimum amount validation
             errors = documentValidator.validateDocument("standard", 5.0);
             assertTrue(errors.stream().anyMatch(error -> 
                 error.contains("Minimum amount for capitalized fee processing")));
