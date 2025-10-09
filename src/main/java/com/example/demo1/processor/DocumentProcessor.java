@@ -7,18 +7,13 @@ import org.springframework.stereotype.Component;
 public class DocumentProcessor {
     
     public void processDocument(String documentId) {
-        // Indirect reference via intermediate variables
-        boolean useCapitalizedFeeFormat = FeatureControlCheckUtil.isCqSetDocFeeCapitalizedWithYValueEnabled();
+        boolean useCapitalizedFeeFormat = true;
         boolean useRedesignedInsurance = FeatureControlCheckUtil.isEcInsuranceRedesignEnabled();
-        
         String processingMode = determineProcessingMode(useCapitalizedFeeFormat, useRedesignedInsurance);
-        
         System.out.println("Processing document " + documentId + " with mode: " + processingMode);
-        
         if (useCapitalizedFeeFormat) {
             applyCapitalizedFeeLogic(documentId);
         }
-        
         if (useRedesignedInsurance) {
             applyRedesignedInsuranceLogic(documentId);
         }

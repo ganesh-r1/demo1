@@ -13,16 +13,11 @@ public class ApplicationConfig {
     @Bean
     public Properties applicationProperties() {
         Properties props = new Properties();
-        
-        // Get feature states and store in variables
-        boolean docFeeCapitalizedState = FeatureControlCheckUtil.isCqSetDocFeeCapitalizedWithYValueEnabled();
+        boolean docFeeCapitalizedState = true;
         boolean insuranceRedesignState = FeatureControlCheckUtil.isEcInsuranceRedesignEnabled();
-        
-        // Configure properties based on feature states
         configureDocumentFeeProperties(props, docFeeCapitalizedState);
         configureInsuranceProperties(props, insuranceRedesignState);
         configureCombinedFeatureProperties(props, docFeeCapitalizedState, insuranceRedesignState);
-        
         return props;
     }
     
@@ -68,14 +63,11 @@ public class ApplicationConfig {
     @Bean
     public Map<String, String> featureStatusMap() {
         Map<String, String> statusMap = new HashMap<>();
-        
-        boolean docFeeFlag = FeatureControlCheckUtil.isCqSetDocFeeCapitalizedWithYValueEnabled();
+        boolean docFeeFlag = true;
         boolean insuranceFlag = FeatureControlCheckUtil.isEcInsuranceRedesignEnabled();
-        
-        statusMap.put("CQ_SET_DOC_FEE_CAPITALIZED_Y", docFeeFlag ? "ENABLED" : "DISABLED");
+        statusMap.put("CQ_SET_DOC_FEE_CAPITALIZED_Y", "ENABLED");
         statusMap.put("EC_INSURANCE_REDESIGN", insuranceFlag ? "ENABLED" : "DISABLED");
         statusMap.put("COMBINED_STATUS", determineCombinedStatus(docFeeFlag, insuranceFlag));
-        
         return statusMap;
     }
     
