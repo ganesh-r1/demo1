@@ -11,19 +11,22 @@ public class FeatureDefaultsConfig {
     private static final Map<String, FeatureMetadata> FEATURE_METADATA = new HashMap<>();
     
     static {
-        // Remove CQ_SET_DOC_FEE_CAPITALIZED_Y
-        DEFAULT_FEATURE_VALUES.put("EC_INSURANCE_REDESIGN", false);
+        // Initialize default feature values
+        DEFAULT_FEATURE_VALUES.put("CQ_SET_DOC_FEE_CAPITALIZED_Y", true);
+        // REMOVED: DEFAULT_FEATURE_VALUES.put("EC_INSURANCE_REDESIGN", false);
         
-        // Remove CQ_SET_DOC_FEE_CAPITALIZED_Y metadata
-        FEATURE_METADATA.put("EC_INSURANCE_REDESIGN", 
+        // Initialize feature metadata
+        FEATURE_METADATA.put("CQ_SET_DOC_FEE_CAPITALIZED_Y", 
             new FeatureMetadata(
-                "EC_INSURANCE_REDESIGN",
-                "Redesigned insurance experience with AI-powered features",
-                "UI_ENHANCEMENT",
-                "FULL_UI_REDESIGN",
-                false
+                "CQ_SET_DOC_FEE_CAPITALIZED_Y",
+                "Enhanced document fee calculation with capitalized Y format",
+                "BILLING",
+                "UI_AND_CALCULATION",
+                true
             )
         );
+        
+        // REMOVED: FEATURE_METADATA.put("EC_INSURANCE_REDESIGN", ... );
     }
     
     /**
