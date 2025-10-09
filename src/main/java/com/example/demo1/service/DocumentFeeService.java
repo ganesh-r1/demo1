@@ -7,18 +7,16 @@ import org.springframework.stereotype.Service;
 public class DocumentFeeService {
     
     public double calculateDocumentFee(double baseAmount) {
-        if (FeatureControlCheckUtil.isCqSetDocFeeCapitalizedWithYValueEnabled()) {
-            return baseAmount * 1.15; // 15% increase when feature is enabled
-        }
+        // Always return baseAmount; feature flag is removed
         return baseAmount;
     }
     
     public String getDocumentFeeDisplayFormat(double fee) {
-        if (FeatureControlCheckUtil.isCqSetDocFeeCapitalizedWithYValueEnabled()) {
-            return String.format("$%.2f (CAPITALIZED)", fee);
-        }
+        // Always show standard format
         return String.format("$%.2f", fee);
     }
     
-    // REMOVED: public boolean isInsuranceProcessingEnabled() ...
+    public boolean isInsuranceProcessingEnabled() {
+        return FeatureControlCheckUtil.isEcInsuranceRedesignEnabled();
+    }
 }

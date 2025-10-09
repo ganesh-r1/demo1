@@ -11,76 +11,48 @@ public class FeatureDefaultsConfig {
     private static final Map<String, FeatureMetadata> FEATURE_METADATA = new HashMap<>();
     
     static {
-        // Initialize default feature values
-        DEFAULT_FEATURE_VALUES.put("CQ_SET_DOC_FEE_CAPITALIZED_Y", true);
-        // REMOVED: DEFAULT_FEATURE_VALUES.put("EC_INSURANCE_REDESIGN", false);
+        // Remove CQ_SET_DOC_FEE_CAPITALIZED_Y feature flag references
+        DEFAULT_FEATURE_VALUES.put("EC_INSURANCE_REDESIGN", false);
         
-        // Initialize feature metadata
-        FEATURE_METADATA.put("CQ_SET_DOC_FEE_CAPITALIZED_Y", 
+        FEATURE_METADATA.put("EC_INSURANCE_REDESIGN", 
             new FeatureMetadata(
-                "CQ_SET_DOC_FEE_CAPITALIZED_Y",
-                "Enhanced document fee calculation with capitalized Y format",
-                "BILLING",
-                "UI_AND_CALCULATION",
-                true
+                "EC_INSURANCE_REDESIGN",
+                "Redesigned insurance experience with AI-powered features",
+                "UI_ENHANCEMENT",
+                "FULL_UI_REDESIGN",
+                false
             )
         );
-        
-        // REMOVED: FEATURE_METADATA.put("EC_INSURANCE_REDESIGN", ... );
     }
     
-    /**
-     * Get default value for a feature
-     */
     public boolean getDefaultValue(String featureId) {
         return DEFAULT_FEATURE_VALUES.getOrDefault(featureId, false);
     }
     
-    /**
-     * Check if feature is known/configured
-     */
     public boolean isKnownFeature(String featureId) {
         return DEFAULT_FEATURE_VALUES.containsKey(featureId);
     }
     
-    /**
-     * Get all default feature values
-     */
     public Map<String, Boolean> getAllDefaults() {
         return new HashMap<>(DEFAULT_FEATURE_VALUES);
     }
     
-    /**
-     * Get feature metadata
-     */
     public FeatureMetadata getFeatureMetadata(String featureId) {
         return FEATURE_METADATA.get(featureId);
     }
     
-    /**
-     * Get all known feature IDs
-     */
     public java.util.Set<String> getKnownFeatureIds() {
         return DEFAULT_FEATURE_VALUES.keySet();
     }
     
-    /**
-     * Add or update a feature default (for testing/configuration)
-     */
     public void setDefaultValue(String featureId, boolean defaultValue) {
         DEFAULT_FEATURE_VALUES.put(featureId, defaultValue);
     }
     
-    /**
-     * Add feature metadata
-     */
     public void setFeatureMetadata(String featureId, FeatureMetadata metadata) {
         FEATURE_METADATA.put(featureId, metadata);
     }
     
-    /**
-     * Feature metadata class
-     */
     public static class FeatureMetadata {
         private final String featureId;
         private final String description;

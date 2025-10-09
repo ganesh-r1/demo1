@@ -18,27 +18,40 @@ public class DocumentFeeServiceTest {
     
     @Test
     void testCalculateDocumentFeeWithCapitalizedFeatureEnabled() {
-        try (MockedStatic<FeatureControlCheckUtil> mockedStatic = Mockito.mockStatic(FeatureControlCheckUtil.class)) {
-            boolean featureEnabled = true;
-            mockedStatic.when(FeatureControlCheckUtil::isCqSetDocFeeCapitalizedWithYValueEnabled)
-                      .thenReturn(featureEnabled);
-            double result = documentFeeService.calculateDocumentFee(100.0);
-            assertEquals(115.0, result, 0.01);
-            String displayFormat = documentFeeService.getDocumentFeeDisplayFormat(result);
-            assertTrue(displayFormat.contains("CAPITALIZED"));
-        }
+        double result = documentFeeService.calculateDocumentFee(100.0);
+        assertEquals(100.0, result, 0.01);
+        String displayFormat = documentFeeService.getDocumentFeeDisplayFormat(result);
+        assertFalse(displayFormat.contains("CAPITALIZED"));
     }
     
     @Test
     void testCalculateDocumentFeeWithCapitalizedFeatureDisabled() {
+        double result = documentFeeService.calculateDocumentFee(100.0);
+        assertEquals(100.0, result, 0.01);
+    }
+    
+    @Test
+    void testInsuranceProcessingFeatureCheck() {
         try (MockedStatic<FeatureControlCheckUtil> mockedStatic = Mockito.mockStatic(FeatureControlCheckUtil.class)) {
-            boolean featureEnabled = false;
-            mockedStatic.when(FeatureControlCheckUtil::isCqSetDocFeeCapitalizedWithYValueEnabled)
-                      .thenReturn(featureEnabled);
-            double result = documentFeeService.calculateDocumentFee(100.0);
-            assertEquals(100.0, result, 0.01);
+            boolean insuranceEnabled = true;
+            mockedStatic.when(FeatureControlCheckUtil::isEcInsuranceRedesignEnabled)
+                      .thenReturn(insuranceEnabled);
+            assertTrue(documentFeeService.isInsuranceProcessingEnabled());
+            mockedStatic.when(FeatureControlCheckUtil::isEcInsuranceRedesignEnabled)
+                      .thenReturn(false);
+            assertFalse(documentFeeService.isInsuranceProcessingEnabled());
         }
     }
     
-    // REMOVED: testInsuranceProcessingFeatureCheck and testCombinedFeatureScenarios (insurance feature logic)
+    @Test
+    void testCombinedFeatureScenarios() {
+        try (MockedStatic<FeatureControlCheckUtil> mockedStatic = Mockito.mockStatic(FeatureControlCheckUtil.class)) {
+            mockedStatic.when(FeatureControlCheckUtil::isEcInsuranceRedesignEnabled)
+                      .thenReturn(true);
+            double feeResult = documentFeeService.calculateDocumentFee(200.0);
+            boolean insuranceResult = documentFeeService.isInsuranceProcessingEnabled();
+            assertEquals(200.0, feeResult, 0.01);
+            assertTrue(insuranceResult);
+        }
+    }
 }

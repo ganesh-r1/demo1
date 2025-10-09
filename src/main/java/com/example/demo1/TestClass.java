@@ -12,10 +12,9 @@ public class TestClass {
         this.featureControlCheckUtil = featureControlCheckUtil;
     }
     
-    
     public void testFunction(){
-        // Always print enabled since the flag is now always enabled
-        System.out.println("Test Feature is enabled");    
+        // Remove check for doc fee feature
+        System.out.println("Test Feature is always enabled");   
     } 
     
 }

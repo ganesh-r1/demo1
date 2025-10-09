@@ -18,13 +18,11 @@ public class FeatureController {
     
     @GetMapping("/features/status")
     public Map<String, Object> getFeatureStatus() {
-        // Get feature states and pass to helper
-        boolean docFeeEnabled = FeatureControlCheckUtil.isCqSetDocFeeCapitalizedWithYValueEnabled();
-        // REMOVED: boolean insuranceEnabled = FeatureControlCheckUtil.isEcInsuranceRedesignEnabled();
+        // Remove docFeeEnabled, only use insuranceEnabled
+        boolean insuranceEnabled = FeatureControlCheckUtil.isEcInsuranceRedesignEnabled();
         
-        // MODIFIED: Only use docFeeEnabled
-        Map<String, Object> config = configHelper.buildConfiguration(docFeeEnabled, false);
-        String systemMode = configHelper.determineSystemMode(docFeeEnabled, false);
+        Map<String, Object> config = configHelper.buildConfiguration(false, insuranceEnabled);
+        String systemMode = configHelper.determineSystemMode(false, insuranceEnabled);
         
         config.put("system_mode", systemMode);
         config.put("timestamp", System.currentTimeMillis());
@@ -34,10 +32,8 @@ public class FeatureController {
     
     @GetMapping("/features/priority")
     public int getProcessingPriority(@RequestParam String documentType) {
-        boolean docFeeFlag = FeatureControlCheckUtil.isCqSetDocFeeCapitalizedWithYValueEnabled();
-        // REMOVED: boolean insuranceFlag = FeatureControlCheckUtil.isEcInsuranceRedesignEnabled();
+        boolean insuranceFlag = FeatureControlCheckUtil.isEcInsuranceRedesignEnabled();
         
-        // MODIFIED: Only use docFeeFlag
-        return configHelper.calculateProcessingPriority(docFeeFlag, false, documentType);
+        return configHelper.calculateProcessingPriority(false, insuranceFlag, documentType);
     }
 }

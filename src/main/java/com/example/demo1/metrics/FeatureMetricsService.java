@@ -10,69 +10,53 @@ import java.time.LocalDateTime;
 @Service
 public class FeatureMetricsService {
     
-    private final AtomicLong docFeeUsageCounter = new AtomicLong(0);
-    // REMOVED: private final AtomicLong insuranceUsageCounter = new AtomicLong(0);
-    // REMOVED: private final AtomicLong combinedUsageCounter = new AtomicLong(0);
+    private final AtomicLong insuranceUsageCounter = new AtomicLong(0);
+    private final AtomicLong combinedUsageCounter = new AtomicLong(0);
     
     public void recordFeatureUsage(String operationType) {
-        // Capture feature states at time of usage
-        boolean docFeeActive = FeatureControlCheckUtil.isCqSetDocFeeCapitalizedWithYValueEnabled();
-        // REMOVED: boolean insuranceActive = FeatureControlCheckUtil.isEcInsuranceRedesignEnabled();
-        
-        // Pass feature states to tracking methods
-        trackFeatureUsage(operationType, docFeeActive);
-        updateCounters(docFeeActive);
+        // Only check insurance feature
+        boolean insuranceActive = FeatureControlCheckUtil.isEcInsuranceRedesignEnabled();
+        trackFeatureUsage(operationType, insuranceActive);
+        updateCounters(insuranceActive);
     }
     
-    private void trackFeatureUsage(String operation, boolean docFeeEnabled) {
+    private void trackFeatureUsage(String operation, boolean insuranceEnabled) {
         Map<String, Object> usageEvent = new HashMap<>();
         usageEvent.put("timestamp", LocalDateTime.now());
         usageEvent.put("operation", operation);
-        usageEvent.put("cq_set_doc_fee_capitalized_y", docFeeEnabled);
-        // REMOVED: usageEvent.put("ec_insurance_redesign", ...);
-        
+        usageEvent.put("ec_insurance_redesign", insuranceEnabled);
         logUsageEvent(usageEvent);
     }
     
-    private void updateCounters(boolean docFeeEnabled) {
-        if (docFeeEnabled) {
-            docFeeUsageCounter.incrementAndGet();
+    private void updateCounters(boolean insuranceEnabled) {
+        if (insuranceEnabled) {
+            insuranceUsageCounter.incrementAndGet();
         }
-        // REMOVED: insuranceUsageCounter.incrementAndGet();
     }
     
     public Map<String, Object> generateMetricsReport() {
         Map<String, Object> report = new HashMap<>();
-        
-        // Get current feature states for report
-        boolean currentDocFeeState = FeatureControlCheckUtil.isCqSetDocFeeCapitalizedWithYValueEnabled();
-        // REMOVED: boolean currentInsuranceState = FeatureControlCheckUtil.isEcInsuranceRedesignEnabled();
-        
+        boolean currentInsuranceState = FeatureControlCheckUtil.isEcInsuranceRedesignEnabled();
         report.put("report_timestamp", LocalDateTime.now());
-        report.put("current_doc_fee_state", currentDocFeeState);
-        // REMOVED: report.put("current_insurance_state", currentInsuranceState);
-        report.put("doc_fee_usage_count", docFeeUsageCounter.get());
-        // REMOVED: report.put("insurance_usage_count", insuranceUsageCounter.get());
-        // REMOVED: report.put("combined_usage_count", combinedUsageCounter.get());
-        
-        // Calculate derived metrics
-        long totalUsage = docFeeUsageCounter.get(); // Only doc fee usage
+        report.put("current_insurance_state", currentInsuranceState);
+        report.put("insurance_usage_count", insuranceUsageCounter.get());
+        report.put("combined_usage_count", combinedUsageCounter.get());
+        long totalUsage = insuranceUsageCounter.get();
         report.put("total_feature_usage", totalUsage);
-        
-        // REMOVED: insurance usage percentage calculations
+        if (totalUsage > 0) {
+            double insurancePercentage = (insuranceUsageCounter.get() * 100.0) / totalUsage;
+            report.put("insurance_usage_percentage", insurancePercentage);
+        }
         return report;
     }
     
     public boolean isHighUsageScenario() {
-        boolean docFeeEnabled = FeatureControlCheckUtil.isCqSetDocFeeCapitalizedWithYValueEnabled();
-        // REMOVED: boolean insuranceEnabled = FeatureControlCheckUtil.isEcInsuranceRedesignEnabled();
-        
-        return analyzeUsagePattern(docFeeEnabled);
+        boolean insuranceEnabled = FeatureControlCheckUtil.isEcInsuranceRedesignEnabled();
+        return analyzeUsagePattern(insuranceEnabled);
     }
     
-    private boolean analyzeUsagePattern(boolean docFeeActive) {
-        long totalUsage = docFeeUsageCounter.get();
-        // REMOVED: insurance usage; logic is now only docFeeActive
+    private boolean analyzeUsagePattern(boolean insuranceActive) {
+        long totalUsage = insuranceUsageCounter.get();
         return totalUsage > 200;
     }
     
