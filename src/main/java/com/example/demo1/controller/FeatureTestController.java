@@ -18,8 +18,8 @@ public class FeatureTestController {
     private static final Map<String, Boolean> testFeatureFlags = new HashMap<>();
     
     static {
-        // Initialize with default test values
-        testFeatureFlags.put("CQ_SET_DOC_FEE_CAPITALIZED_Y", true);
+        // CQ_SET_DOC_FEE_CAPITALIZED_Y removed; always enabled
+        // testFeatureFlags.put("CQ_SET_DOC_FEE_CAPITALIZED_Y", true);
         testFeatureFlags.put("EC_INSURANCE_REDESIGN", false);
     }
     
@@ -27,8 +27,8 @@ public class FeatureTestController {
     public Map<String, Object> getFeatureValue(@RequestParam String featureId) {
         Map<String, Object> response = new HashMap<>();
         
-        // Get feature value from test storage
-        boolean enabled = testFeatureFlags.getOrDefault(featureId, false);
+        // CQ_SET_DOC_FEE_CAPITALIZED_Y removed; always enabled
+        boolean enabled = "CQ_SET_DOC_FEE_CAPITALIZED_Y".equals(featureId) ? true : testFeatureFlags.getOrDefault(featureId, false);
         
         response.put("featureId", featureId);
         response.put("enabled", enabled);
@@ -45,6 +45,16 @@ public class FeatureTestController {
     public Map<String, Object> toggleFeature(@RequestParam String featureId) {
         Map<String, Object> response = new HashMap<>();
         
+        if ("CQ_SET_DOC_FEE_CAPITALIZED_Y".equals(featureId)) {
+            // Do nothing; always enabled.
+            response.put("featureId", featureId);
+            response.put("previousValue", true);
+            response.put("newValue", true);
+            response.put("timestamp", LocalDateTime.now().toString());
+            response.put("action", "NOOP_ALWAYS_ENABLED");
+            return response;
+        }
+
         // Toggle the feature value
         boolean currentValue = testFeatureFlags.getOrDefault(featureId, false);
         boolean newValue = !currentValue;
@@ -64,6 +74,15 @@ public class FeatureTestController {
                                         @RequestParam boolean enabled) {
         Map<String, Object> response = new HashMap<>();
         
+        if ("CQ_SET_DOC_FEE_CAPITALIZED_Y".equals(featureId)) {
+            response.put("featureId", featureId);
+            response.put("previousValue", true);
+            response.put("newValue", true);
+            response.put("timestamp", LocalDateTime.now().toString());
+            response.put("action", "NOOP_ALWAYS_ENABLED");
+            return response;
+        }
+
         boolean previousValue = testFeatureFlags.getOrDefault(featureId, false);
         testFeatureFlags.put(featureId, enabled);
         
@@ -79,10 +98,11 @@ public class FeatureTestController {
     @GetMapping("/feature/all")
     public Map<String, Object> getAllFeatures() {
         Map<String, Object> response = new HashMap<>();
-        
-        response.put("features", new HashMap<>(testFeatureFlags));
+        Map<String, Boolean> allFeatures = new HashMap<>(testFeatureFlags);
+        allFeatures.put("CQ_SET_DOC_FEE_CAPITALIZED_Y", true);
+        response.put("features", allFeatures);
         response.put("timestamp", LocalDateTime.now().toString());
-        response.put("totalFeatures", testFeatureFlags.size());
+        response.put("totalFeatures", allFeatures.size());
         
         return response;
     }
@@ -96,11 +116,13 @@ public class FeatureTestController {
         
         // Reset to defaults
         testFeatureFlags.clear();
-        testFeatureFlags.put("CQ_SET_DOC_FEE_CAPITALIZED_Y", true);
+        // CQ_SET_DOC_FEE_CAPITALIZED_Y always enabled; do not reset
         testFeatureFlags.put("EC_INSURANCE_REDESIGN", false);
         
         response.put("previousState", previousState);
-        response.put("newState", new HashMap<>(testFeatureFlags));
+        Map<String, Boolean> newState = new HashMap<>(testFeatureFlags);
+        newState.put("CQ_SET_DOC_FEE_CAPITALIZED_Y", true);
+        response.put("newState", newState);
         response.put("timestamp", LocalDateTime.now().toString());
         response.put("action", "RESET_TO_DEFAULTS");
         

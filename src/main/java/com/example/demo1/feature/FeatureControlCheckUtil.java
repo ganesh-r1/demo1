@@ -17,7 +17,8 @@ public class FeatureControlCheckUtil {
     private static final FeatureDefaultsConfig defaultsConfig = new FeatureDefaultsConfig();
     
     public static boolean isCqSetDocFeeCapitalizedWithYValueEnabled(){
-        return isFeatureEnabled(CQ_SET_DOC_FEE_CAPITALIZED_Y);
+        // Feature has been removed - always return true
+        return true;
     }
     
     public static boolean isFeatureEnabled(String featureId){
