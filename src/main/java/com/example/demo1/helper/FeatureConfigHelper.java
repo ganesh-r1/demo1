@@ -10,7 +10,6 @@ public class FeatureConfigHelper {
     public Map<String, Object> buildConfiguration(boolean docFeeCapitalized, boolean insuranceRedesigned) {
         Map<String, Object> config = new HashMap<>();
         
-        // Configure based on received feature values
         if (docFeeCapitalized) {
             config.put("fee.display.format", "CAPITALIZED_Y");
             config.put("fee.calculation.multiplier", 1.15);
@@ -21,15 +20,9 @@ public class FeatureConfigHelper {
             config.put("fee.precision", 2);
         }
         
-        if (insuranceRedesigned) {
-            config.put("insurance.ui.theme", "MODERN_REDESIGN");
-            config.put("insurance.processing.algorithm", "ENHANCED");
-            config.put("insurance.validation.strict", true);
-        } else {
-            config.put("insurance.ui.theme", "CLASSIC");
-            config.put("insurance.processing.algorithm", "STANDARD");
-            config.put("insurance.validation.strict", false);
-        }
+        config.put("insurance.ui.theme", "MODERN_REDESIGN");
+        config.put("insurance.processing.algorithm", "ENHANCED");
+        config.put("insurance.validation.strict", true);
         
         return config;
     }
@@ -54,6 +47,6 @@ public class FeatureConfigHelper {
             basePriority += 2;
         }
         
-        return Math.min(basePriority, 10); // Cap at 10
+        return Math.min(basePriority, 10);
     }
 }
