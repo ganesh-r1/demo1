@@ -10,7 +10,7 @@ import java.util.Map;
 public class FeatureControlCheckUtil {
     
     private static final String CQ_SET_DOC_FEE_CAPITALIZED_Y = "CQ_SET_DOC_FEE_CAPITALIZED_Y";
-    private static final String EC_INSURANCE_REDESIGN = "EC_INSURANCE_REDESIGN";
+    // REMOVED: private static final String EC_INSURANCE_REDESIGN = "EC_INSURANCE_REDESIGN";
     
     private static final FeatureServiceClient featureServiceClient = new FeatureServiceClient();
     private static final FeatureCacheManager cacheManager = new FeatureCacheManager();
@@ -58,16 +58,12 @@ public class FeatureControlCheckUtil {
         return defaultsConfig.getDefaultValue(featureId);
     }
     
-    public static boolean isEcInsuranceRedesignEnabled(){
-        return isFeatureEnabled(EC_INSURANCE_REDESIGN);
-    }
-    
-    // Utility method to clear cache (useful for testing)
+    // REMOVED: public static boolean isEcInsuranceRedesignEnabled()
+    // Utility methods remain unchanged
     public static void clearFeatureCache() {
         cacheManager.clearCache();
     }
     
-    // Utility method to get cache status
     public static Map<String, Object> getCacheStatus() {
         FeatureCacheManager.CacheStats stats = cacheManager.getCacheStats();
         return Map.of(
@@ -78,22 +74,18 @@ public class FeatureControlCheckUtil {
         );
     }
     
-    // Utility method to check service health
     public static boolean isFeatureServiceAvailable() {
         return featureServiceClient.isServiceAvailable();
     }
     
-    // Utility method to get feature metadata
     public static FeatureDefaultsConfig.FeatureMetadata getFeatureMetadata(String featureId) {
         return defaultsConfig.getFeatureMetadata(featureId);
     }
     
-    // Utility method to get all known features
     public static java.util.Set<String> getKnownFeatures() {
         return defaultsConfig.getKnownFeatureIds();
     }
     
-    // Force refresh a specific feature (bypass cache)
     public static boolean refreshFeature(String featureId) {
         try {
             cacheManager.clearFeature(featureId);
