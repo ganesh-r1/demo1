@@ -11,21 +11,10 @@ public class FeatureDefaultsConfig {
     private static final Map<String, FeatureMetadata> FEATURE_METADATA = new HashMap<>();
     
     static {
-        // Initialize default feature values
-        DEFAULT_FEATURE_VALUES.put("CQ_SET_DOC_FEE_CAPITALIZED_Y", true);
+        // Remove CQ_SET_DOC_FEE_CAPITALIZED_Y
         DEFAULT_FEATURE_VALUES.put("EC_INSURANCE_REDESIGN", false);
         
-        // Initialize feature metadata
-        FEATURE_METADATA.put("CQ_SET_DOC_FEE_CAPITALIZED_Y", 
-            new FeatureMetadata(
-                "CQ_SET_DOC_FEE_CAPITALIZED_Y",
-                "Enhanced document fee calculation with capitalized Y format",
-                "BILLING",
-                "UI_AND_CALCULATION",
-                true
-            )
-        );
-        
+        // Remove CQ_SET_DOC_FEE_CAPITALIZED_Y metadata
         FEATURE_METADATA.put("EC_INSURANCE_REDESIGN", 
             new FeatureMetadata(
                 "EC_INSURANCE_REDESIGN",
