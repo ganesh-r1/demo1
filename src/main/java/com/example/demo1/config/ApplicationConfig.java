@@ -14,29 +14,21 @@ public class ApplicationConfig {
     public Properties applicationProperties() {
         Properties props = new Properties();
         
-        // Get feature states and store in variables
-        boolean docFeeCapitalizedState = FeatureControlCheckUtil.isCqSetDocFeeCapitalizedWithYValueEnabled();
         boolean insuranceRedesignState = FeatureControlCheckUtil.isEcInsuranceRedesignEnabled();
         
-        // Configure properties based on feature states
-        configureDocumentFeeProperties(props, docFeeCapitalizedState);
+        // Hard-code document fee feature as always enabled
+        configureDocumentFeeProperties(props);
         configureInsuranceProperties(props, insuranceRedesignState);
-        configureCombinedFeatureProperties(props, docFeeCapitalizedState, insuranceRedesignState);
+        configureCombinedFeatureProperties(props, insuranceRedesignState);
         
         return props;
     }
     
-    private void configureDocumentFeeProperties(Properties props, boolean featureEnabled) {
-        if (featureEnabled) {
-            props.setProperty("document.fee.format", "CAPITALIZED_Y");
-            props.setProperty("document.fee.multiplier", "1.15");
-            props.setProperty("document.fee.precision", "4");
-            props.setProperty("document.fee.validation.strict", "true");
-        } else {
-            props.setProperty("document.fee.format", "STANDARD");
-            props.setProperty("document.fee.multiplier", "1.0");
-            props.setProperty("document.fee.precision", "2");
-        }
+    private void configureDocumentFeeProperties(Properties props) {
+        props.setProperty("document.fee.format", "CAPITALIZED_Y");
+        props.setProperty("document.fee.multiplier", "1.15");
+        props.setProperty("document.fee.precision", "4");
+        props.setProperty("document.fee.validation.strict", "true");
     }
     
     private void configureInsuranceProperties(Properties props, boolean featureEnabled) {
@@ -51,42 +43,24 @@ public class ApplicationConfig {
         }
     }
     
-    private void configureCombinedFeatureProperties(Properties props, boolean docFeeEnabled, boolean insuranceEnabled) {
-        if (docFeeEnabled && insuranceEnabled) {
+    private void configureCombinedFeatureProperties(Properties props, boolean insuranceEnabled) {
+        if (insuranceEnabled) {
             props.setProperty("system.mode", "PREMIUM_ENHANCED");
             props.setProperty("processing.priority", "HIGH");
             props.setProperty("feature.compatibility.check", "COMPREHENSIVE");
-        } else if (docFeeEnabled || insuranceEnabled) {
+        } else {
             props.setProperty("system.mode", "PARTIAL_ENHANCED");
             props.setProperty("processing.priority", "MEDIUM");
-        } else {
-            props.setProperty("system.mode", "STANDARD");
-            props.setProperty("processing.priority", "NORMAL");
         }
     }
     
     @Bean
     public Map<String, String> featureStatusMap() {
         Map<String, String> statusMap = new HashMap<>();
-        
-        boolean docFeeFlag = FeatureControlCheckUtil.isCqSetDocFeeCapitalizedWithYValueEnabled();
         boolean insuranceFlag = FeatureControlCheckUtil.isEcInsuranceRedesignEnabled();
-        
-        statusMap.put("CQ_SET_DOC_FEE_CAPITALIZED_Y", docFeeFlag ? "ENABLED" : "DISABLED");
+        statusMap.put("CQ_SET_DOC_FEE_CAPITALIZED_Y", "ENABLED");
         statusMap.put("EC_INSURANCE_REDESIGN", insuranceFlag ? "ENABLED" : "DISABLED");
-        statusMap.put("COMBINED_STATUS", determineCombinedStatus(docFeeFlag, insuranceFlag));
-        
+        statusMap.put("COMBINED_STATUS", insuranceFlag ? "FULL_FEATURE_SET" : "INSURANCE_ONLY");
         return statusMap;
-    }
-    
-    private String determineCombinedStatus(boolean docFee, boolean insurance) {
-        if (docFee && insurance) {
-            return "FULL_FEATURE_SET";
-        } else if (docFee) {
-            return "DOC_FEE_ONLY";
-        } else if (insurance) {
-            return "INSURANCE_ONLY";
-        }
-        return "BASIC_MODE";
     }
 }
