@@ -1,24 +1,13 @@
 package com.example.demo1;
 
-import com.example.demo1.feature.FeatureControlCheckUtil;
 import org.springframework.stereotype.Component;
 
 @Component
 public class TestClass {
     
-    private final FeatureControlCheckUtil featureControlCheckUtil;
-    
-    public TestClass(FeatureControlCheckUtil featureControlCheckUtil){
-        this.featureControlCheckUtil = featureControlCheckUtil;
-    }
-    
-    
+    // CQ_SET_DOC_FEE_CAPITALIZED_Y always enabled, so no check needed
     public void testFunction(){
-        if(featureControlCheckUtil.isCqSetDocFeeCapitalizedWithYValueEnabled()){
-            System.out.println("Test Feature is enabled");   
-        }else{
-            System.out.println("Test Feature is disabled");
-        }
+        System.out.println("Test Feature is enabled");   
     } 
     
 }
