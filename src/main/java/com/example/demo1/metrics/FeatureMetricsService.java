@@ -15,8 +15,8 @@ public class FeatureMetricsService {
     private final AtomicLong combinedUsageCounter = new AtomicLong(0);
     
     public void recordFeatureUsage(String operationType) {
-        // Capture feature states at time of usage
-        boolean docFeeActive = FeatureControlCheckUtil.isCqSetDocFeeCapitalizedWithYValueEnabled();
+        // CQ_SET_DOC_FEE_CAPITALIZED_Y is always enabled
+        boolean docFeeActive = true;
         boolean insuranceActive = FeatureControlCheckUtil.isEcInsuranceRedesignEnabled();
         
         // Pass feature states to tracking methods
@@ -47,8 +47,8 @@ public class FeatureMetricsService {
     public Map<String, Object> generateMetricsReport() {
         Map<String, Object> report = new HashMap<>();
         
-        // Get current feature states for report
-        boolean currentDocFeeState = FeatureControlCheckUtil.isCqSetDocFeeCapitalizedWithYValueEnabled();
+        // CQ_SET_DOC_FEE_CAPITALIZED_Y is always enabled
+        boolean currentDocFeeState = true;
         boolean currentInsuranceState = FeatureControlCheckUtil.isEcInsuranceRedesignEnabled();
         
         report.put("report_timestamp", LocalDateTime.now());
@@ -74,7 +74,8 @@ public class FeatureMetricsService {
     }
     
     public boolean isHighUsageScenario() {
-        boolean docFeeEnabled = FeatureControlCheckUtil.isCqSetDocFeeCapitalizedWithYValueEnabled();
+        // CQ_SET_DOC_FEE_CAPITALIZED_Y is always enabled
+        boolean docFeeEnabled = true;
         boolean insuranceEnabled = FeatureControlCheckUtil.isEcInsuranceRedesignEnabled();
         
         return analyzeUsagePattern(docFeeEnabled, insuranceEnabled);
