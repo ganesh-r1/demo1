@@ -19,7 +19,7 @@ public class FeatureTestController {
     
     static {
         // Initialize with default test values
-        testFeatureFlags.put("CQ_SET_DOC_FEE_CAPITALIZED_Y", true);
+        // testFeatureFlags.put("CQ_SET_DOC_FEE_CAPITALIZED_Y", true); // Removed
         testFeatureFlags.put("EC_INSURANCE_REDESIGN", false);
     }
     
@@ -27,8 +27,12 @@ public class FeatureTestController {
     public Map<String, Object> getFeatureValue(@RequestParam String featureId) {
         Map<String, Object> response = new HashMap<>();
         
-        // Get feature value from test storage
-        boolean enabled = testFeatureFlags.getOrDefault(featureId, false);
+        boolean enabled;
+        if ("CQ_SET_DOC_FEE_CAPITALIZED_Y".equals(featureId)) {
+            enabled = true; // Always return true for removed feature
+        } else {
+            enabled = testFeatureFlags.getOrDefault(featureId, false);
+        }
         
         response.put("featureId", featureId);
         response.put("enabled", enabled);
@@ -45,10 +49,16 @@ public class FeatureTestController {
     public Map<String, Object> toggleFeature(@RequestParam String featureId) {
         Map<String, Object> response = new HashMap<>();
         
-        // Toggle the feature value
-        boolean currentValue = testFeatureFlags.getOrDefault(featureId, false);
-        boolean newValue = !currentValue;
-        testFeatureFlags.put(featureId, newValue);
+        boolean currentValue;
+        boolean newValue;
+        if ("CQ_SET_DOC_FEE_CAPITALIZED_Y".equals(featureId)) {
+            currentValue = true;
+            newValue = true; // Cannot toggle, always true
+        } else {
+            currentValue = testFeatureFlags.getOrDefault(featureId, false);
+            newValue = !currentValue;
+            testFeatureFlags.put(featureId, newValue);
+        }
         
         response.put("featureId", featureId);
         response.put("previousValue", currentValue);
@@ -64,12 +74,18 @@ public class FeatureTestController {
                                         @RequestParam boolean enabled) {
         Map<String, Object> response = new HashMap<>();
         
-        boolean previousValue = testFeatureFlags.getOrDefault(featureId, false);
-        testFeatureFlags.put(featureId, enabled);
+        boolean previousValue;
+        if ("CQ_SET_DOC_FEE_CAPITALIZED_Y".equals(featureId)) {
+            previousValue = true;
+            // Do not actually change, always true
+        } else {
+            previousValue = testFeatureFlags.getOrDefault(featureId, false);
+            testFeatureFlags.put(featureId, enabled);
+        }
         
         response.put("featureId", featureId);
         response.put("previousValue", previousValue);
-        response.put("newValue", enabled);
+        response.put("newValue", "CQ_SET_DOC_FEE_CAPITALIZED_Y".equals(featureId) ? true : enabled);
         response.put("timestamp", LocalDateTime.now().toString());
         response.put("action", "SET");
         
@@ -80,9 +96,12 @@ public class FeatureTestController {
     public Map<String, Object> getAllFeatures() {
         Map<String, Object> response = new HashMap<>();
         
-        response.put("features", new HashMap<>(testFeatureFlags));
+        // Always include doc fee as true
+        Map<String, Boolean> result = new HashMap<>(testFeatureFlags);
+        result.put("CQ_SET_DOC_FEE_CAPITALIZED_Y", true);
+        response.put("features", result);
         response.put("timestamp", LocalDateTime.now().toString());
-        response.put("totalFeatures", testFeatureFlags.size());
+        response.put("totalFeatures", result.size());
         
         return response;
     }
@@ -96,11 +115,15 @@ public class FeatureTestController {
         
         // Reset to defaults
         testFeatureFlags.clear();
-        testFeatureFlags.put("CQ_SET_DOC_FEE_CAPITALIZED_Y", true);
+        // testFeatureFlags.put("CQ_SET_DOC_FEE_CAPITALIZED_Y", true); // No longer added, always true
         testFeatureFlags.put("EC_INSURANCE_REDESIGN", false);
         
+        // Always include doc fee as true in output
+        Map<String, Boolean> newState = new HashMap<>(testFeatureFlags);
+        newState.put("CQ_SET_DOC_FEE_CAPITALIZED_Y", true);
+        
         response.put("previousState", previousState);
-        response.put("newState", new HashMap<>(testFeatureFlags));
+        response.put("newState", newState);
         response.put("timestamp", LocalDateTime.now().toString());
         response.put("action", "RESET_TO_DEFAULTS");
         
