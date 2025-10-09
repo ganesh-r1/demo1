@@ -13,32 +13,13 @@ public class ApplicationConfig {
     @Bean
     public Properties applicationProperties() {
         Properties props = new Properties();
-        
-        // Get feature states and store in variables
-        boolean docFeeCapitalizedState = FeatureControlCheckUtil.isCqSetDocFeeCapitalizedWithYValueEnabled();
+        // Remove docFeeCapitalizedState logic
         boolean insuranceRedesignState = FeatureControlCheckUtil.isEcInsuranceRedesignEnabled();
-        
-        // Configure properties based on feature states
-        configureDocumentFeeProperties(props, docFeeCapitalizedState);
+        // Remove references to docFeeCapitalizedState
         configureInsuranceProperties(props, insuranceRedesignState);
-        configureCombinedFeatureProperties(props, docFeeCapitalizedState, insuranceRedesignState);
-        
+        // Remove configureDocumentFeeProperties and configureCombinedFeatureProperties
         return props;
     }
-    
-    private void configureDocumentFeeProperties(Properties props, boolean featureEnabled) {
-        if (featureEnabled) {
-            props.setProperty("document.fee.format", "CAPITALIZED_Y");
-            props.setProperty("document.fee.multiplier", "1.15");
-            props.setProperty("document.fee.precision", "4");
-            props.setProperty("document.fee.validation.strict", "true");
-        } else {
-            props.setProperty("document.fee.format", "STANDARD");
-            props.setProperty("document.fee.multiplier", "1.0");
-            props.setProperty("document.fee.precision", "2");
-        }
-    }
-    
     private void configureInsuranceProperties(Properties props, boolean featureEnabled) {
         if (featureEnabled) {
             props.setProperty("insurance.ui.theme", "MODERN_REDESIGN");
@@ -50,41 +31,16 @@ public class ApplicationConfig {
             props.setProperty("insurance.processing.enhanced", "false");
         }
     }
-    
-    private void configureCombinedFeatureProperties(Properties props, boolean docFeeEnabled, boolean insuranceEnabled) {
-        if (docFeeEnabled && insuranceEnabled) {
-            props.setProperty("system.mode", "PREMIUM_ENHANCED");
-            props.setProperty("processing.priority", "HIGH");
-            props.setProperty("feature.compatibility.check", "COMPREHENSIVE");
-        } else if (docFeeEnabled || insuranceEnabled) {
-            props.setProperty("system.mode", "PARTIAL_ENHANCED");
-            props.setProperty("processing.priority", "MEDIUM");
-        } else {
-            props.setProperty("system.mode", "STANDARD");
-            props.setProperty("processing.priority", "NORMAL");
-        }
-    }
-    
     @Bean
     public Map<String, String> featureStatusMap() {
         Map<String, String> statusMap = new HashMap<>();
-        
-        boolean docFeeFlag = FeatureControlCheckUtil.isCqSetDocFeeCapitalizedWithYValueEnabled();
         boolean insuranceFlag = FeatureControlCheckUtil.isEcInsuranceRedesignEnabled();
-        
-        statusMap.put("CQ_SET_DOC_FEE_CAPITALIZED_Y", docFeeFlag ? "ENABLED" : "DISABLED");
         statusMap.put("EC_INSURANCE_REDESIGN", insuranceFlag ? "ENABLED" : "DISABLED");
-        statusMap.put("COMBINED_STATUS", determineCombinedStatus(docFeeFlag, insuranceFlag));
-        
+        statusMap.put("COMBINED_STATUS", insuranceFlag ? "INSURANCE_ONLY" : "BASIC_MODE");
         return statusMap;
     }
-    
-    private String determineCombinedStatus(boolean docFee, boolean insurance) {
-        if (docFee && insurance) {
-            return "FULL_FEATURE_SET";
-        } else if (docFee) {
-            return "DOC_FEE_ONLY";
-        } else if (insurance) {
+    private String determineCombinedStatus(boolean insurance) {
+        if (insurance) {
             return "INSURANCE_ONLY";
         }
         return "BASIC_MODE";
