@@ -21,23 +21,16 @@ public class FeatureConfigHelper {
             config.put("fee.precision", 2);
         }
         
-        if (insuranceRedesigned) {
-            config.put("insurance.ui.theme", "MODERN_REDESIGN");
-            config.put("insurance.processing.algorithm", "ENHANCED");
-            config.put("insurance.validation.strict", true);
-        } else {
-            config.put("insurance.ui.theme", "CLASSIC");
-            config.put("insurance.processing.algorithm", "STANDARD");
-            config.put("insurance.validation.strict", false);
-        }
+        // insuranceRedesigned usage disabled
+        config.put("insurance.ui.theme", "CLASSIC");
+        config.put("insurance.processing.algorithm", "STANDARD");
+        config.put("insurance.validation.strict", false);
         
         return config;
     }
     
     public String determineSystemMode(boolean docFeeEnabled, boolean insuranceEnabled) {
-        if (docFeeEnabled && insuranceEnabled) {
-            return "FULL_FEATURE_MODE";
-        } else if (docFeeEnabled || insuranceEnabled) {
+        if (docFeeEnabled) {
             return "PARTIAL_FEATURE_MODE";
         }
         return "BASIC_MODE";
@@ -50,9 +43,7 @@ public class FeatureConfigHelper {
             basePriority += 3;
         }
         
-        if (insuranceEnabled && "insurance".equals(documentType)) {
-            basePriority += 2;
-        }
+        // insuranceEnabled block removed
         
         return Math.min(basePriority, 10); // Cap at 10
     }
