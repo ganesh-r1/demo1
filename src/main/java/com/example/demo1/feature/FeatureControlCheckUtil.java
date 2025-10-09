@@ -9,15 +9,14 @@ import java.util.Map;
 @Component
 public class FeatureControlCheckUtil {
     
-    private static final String CQ_SET_DOC_FEE_CAPITALIZED_Y = "CQ_SET_DOC_FEE_CAPITALIZED_Y";
     private static final String EC_INSURANCE_REDESIGN = "EC_INSURANCE_REDESIGN";
     
     private static final FeatureServiceClient featureServiceClient = new FeatureServiceClient();
     private static final FeatureCacheManager cacheManager = new FeatureCacheManager();
     private static final FeatureDefaultsConfig defaultsConfig = new FeatureDefaultsConfig();
     
-    public static boolean isCqSetDocFeeCapitalizedWithYValueEnabled(){
-        return isFeatureEnabled(CQ_SET_DOC_FEE_CAPITALIZED_Y);
+    public static boolean isEcInsuranceRedesignEnabled(){
+        return isFeatureEnabled(EC_INSURANCE_REDESIGN);
     }
     
     public static boolean isFeatureEnabled(String featureId){
@@ -56,10 +55,6 @@ public class FeatureControlCheckUtil {
         
         // Fall back to configured default
         return defaultsConfig.getDefaultValue(featureId);
-    }
-    
-    public static boolean isEcInsuranceRedesignEnabled(){
-        return isFeatureEnabled(EC_INSURANCE_REDESIGN);
     }
     
     // Utility method to clear cache (useful for testing)
