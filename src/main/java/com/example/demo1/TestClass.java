@@ -12,13 +12,9 @@ public class TestClass {
         this.featureControlCheckUtil = featureControlCheckUtil;
     }
     
-    
     public void testFunction(){
-        if(featureControlCheckUtil.isCqSetDocFeeCapitalizedWithYValueEnabled()){
-            System.out.println("Test Feature is enabled");   
-        }else{
-            System.out.println("Test Feature is disabled");
-        }
-    } 
+        // Feature CQ_SET_DOC_FEE_CAPITALIZED_Y is always disabled (removed)
+        System.out.println("Test Feature is disabled");
+    }
     
 }
