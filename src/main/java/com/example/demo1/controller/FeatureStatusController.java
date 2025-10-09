@@ -20,14 +20,14 @@ public class FeatureStatusController {
         
         // Get current feature flag states
         boolean docFeeCapitalizedEnabled = FeatureControlCheckUtil.isCqSetDocFeeCapitalizedWithYValueEnabled();
-        boolean insuranceRedesignEnabled = FeatureControlCheckUtil.isEcInsuranceRedesignEnabled();
+        // REMOVED: boolean insuranceRedesignEnabled = FeatureControlCheckUtil.isEcInsuranceRedesignEnabled();
         
         // Add individual feature statuses
         response.put("cq_set_doc_fee_capitalized_y_status", docFeeCapitalizedEnabled);
-        response.put("ec_insurance_redesign_status", insuranceRedesignEnabled);
+        // REMOVED: response.put("ec_insurance_redesign_status", insuranceRedesignEnabled);
         
         // Add derived configuration based on feature states
-        response.putAll(buildFeatureConfiguration(docFeeCapitalizedEnabled, insuranceRedesignEnabled));
+        response.putAll(buildFeatureConfiguration(docFeeCapitalizedEnabled, false));
         
         // Add metadata
         response.put("timestamp", LocalDateTime.now().toString());
@@ -55,58 +55,32 @@ public class FeatureStatusController {
             uiConfig.put("fee_calculation_precision", 2);
             uiConfig.put("enhanced_fee_ui", false);
         }
-        
-        if (insuranceEnabled) {
-            uiConfig.put("insurance_theme", "MODERN_REDESIGN");
-            uiConfig.put("ai_features_enabled", true);
-            uiConfig.put("enhanced_claims_ui", true);
-            uiConfig.put("smart_search_enabled", true);
-            uiConfig.put("photo_claims_enabled", true);
-        } else {
-            uiConfig.put("insurance_theme", "CLASSIC");
-            uiConfig.put("ai_features_enabled", false);
-            uiConfig.put("enhanced_claims_ui", false);
-            uiConfig.put("smart_search_enabled", false);
-            uiConfig.put("photo_claims_enabled", false);
-        }
-        
+        // REMOVED: insuranceEnabled blocks
         config.put("ui_config", uiConfig);
         // Feature capabilities
         Map<String, Object> capabilities = new HashMap<>();
         capabilities.put("document_processing", docFeeEnabled ? "ENHANCED" : "STANDARD");
-        capabilities.put("insurance_processing", insuranceEnabled ? "AI_POWERED" : "TRADITIONAL");
-        capabilities.put("claims_processing", insuranceEnabled ? "DIGITAL_FIRST" : "MANUAL");
-        capabilities.put("risk_assessment", insuranceEnabled ? "AI_ENABLED" : "BASIC");
-        
+        // REMOVED: capabilities for insurance
         config.put("capabilities", capabilities);
-        
         // Processing configuration
         Map<String, Object> processing = new HashMap<>();
         processing.put("priority_level", determinePriorityLevel(docFeeEnabled, insuranceEnabled));
-        processing.put("enhanced_validation", docFeeEnabled || insuranceEnabled);
-        processing.put("real_time_updates", insuranceEnabled);
-        processing.put("batch_processing", !insuranceEnabled);
-        
+        processing.put("enhanced_validation", docFeeEnabled);
+        // REMOVED: processing.put("real_time_updates", insuranceEnabled);
+        // REMOVED: processing.put("batch_processing", !insuranceEnabled);
         config.put("processing", processing);
-        
         return config;
     }
     
     private String determineSystemMode(boolean docFeeEnabled, boolean insuranceEnabled) {
-        if (docFeeEnabled && insuranceEnabled) {
-            return "PREMIUM_ENHANCED";
-        } else if (docFeeEnabled) {
+        if (docFeeEnabled) {
             return "DOC_FEE_ENHANCED";
-        } else if (insuranceEnabled) {
-            return "INSURANCE_ENHANCED";
         }
         return "STANDARD";
     }
     
     private String determinePriorityLevel(boolean docFeeEnabled, boolean insuranceEnabled) {
-        if (docFeeEnabled && insuranceEnabled) {
-            return "HIGH";
-        } else if (docFeeEnabled || insuranceEnabled) {
+        if (docFeeEnabled) {
             return "MEDIUM";
         }
         return "NORMAL";
@@ -118,8 +92,8 @@ public class FeatureStatusController {
         
         // Get feature states
         boolean docFeeEnabled = FeatureControlCheckUtil.isCqSetDocFeeCapitalizedWithYValueEnabled();
-        boolean insuranceEnabled = FeatureControlCheckUtil.isEcInsuranceRedesignEnabled();
-        
+        // REMOVED: boolean insuranceEnabled = ...
+
         // Detailed feature information
         Map<String, Object> docFeeDetails = new HashMap<>();
         docFeeDetails.put("enabled", docFeeEnabled);
@@ -127,44 +101,19 @@ public class FeatureStatusController {
         docFeeDetails.put("description", "Enhanced document fee calculation with capitalized Y format");
         docFeeDetails.put("impact_areas", new String[]{"billing", "document_processing", "fee_calculation"});
         docFeeDetails.put("ui_changes", docFeeEnabled ? "Enhanced fee display and calculation UI" : "Standard fee UI");
-        
-        Map<String, Object> insuranceDetails = new HashMap<>();
-        insuranceDetails.put("enabled", insuranceEnabled);
-        insuranceDetails.put("feature_name", "EC_INSURANCE_REDESIGN");
-        insuranceDetails.put("description", "Redesigned insurance experience with AI-powered features");
-        insuranceDetails.put("impact_areas", new String[]{"claims", "ui_theme", "ai_features", "risk_assessment"});
-        insuranceDetails.put("ui_changes", insuranceEnabled ? "Modern redesigned insurance interface" : "Classic insurance UI");
-        
+        // REMOVED: insuranceDetails
         response.put("cq_set_doc_fee_capitalized_y", docFeeDetails);
-        response.put("ec_insurance_redesign", insuranceDetails);
-        
+        // REMOVED: response.put("ec_insurance_redesign", insuranceDetails);
         // System compatibility
         Map<String, Object> compatibility = new HashMap<>();
-        compatibility.put("features_compatible", areFeatureCompatible(docFeeEnabled, insuranceEnabled));
-        compatibility.put("requires_database_upgrade", docFeeEnabled && insuranceEnabled);
-        compatibility.put("performance_impact", calculatePerformanceImpact(docFeeEnabled, insuranceEnabled));
-        
+        compatibility.put("features_compatible", true);
+        compatibility.put("requires_database_upgrade", false);
+        compatibility.put("performance_impact", docFeeEnabled ? "LOW" : "MINIMAL");
         response.put("compatibility", compatibility);
-        
         // Add metadata
         response.put("timestamp", LocalDateTime.now().toString());
         response.put("check_performed_at", System.currentTimeMillis());
-        
         return response;
-    }
-    
-    private boolean areFeatureCompatible(boolean docFeeEnabled, boolean insuranceEnabled) {
-        // Both features are compatible with each other
-        return true;
-    }
-    
-    private String calculatePerformanceImpact(boolean docFeeEnabled, boolean insuranceEnabled) {
-        if (docFeeEnabled && insuranceEnabled) {
-            return "MODERATE"; // Both features together have moderate impact
-        } else if (docFeeEnabled || insuranceEnabled) {
-            return "LOW"; // Single feature has low impact
-        }
-        return "MINIMAL"; // No enhanced features
     }
     
     @GetMapping("/status/health")
@@ -174,18 +123,16 @@ public class FeatureStatusController {
         try {
             // Check if feature control utility is accessible
             boolean docFeeCheck = FeatureControlCheckUtil.isCqSetDocFeeCapitalizedWithYValueEnabled();
-            boolean insuranceCheck = FeatureControlCheckUtil.isEcInsuranceRedesignEnabled();
+            // REMOVED: boolean insuranceCheck = FeatureControlCheckUtil.isEcInsuranceRedesignEnabled();
             
             health.put("feature_service_status", "HEALTHY");
             health.put("doc_fee_check_successful", true);
-            health.put("insurance_check_successful", true);
             health.put("last_check_time", LocalDateTime.now().toString());
             
         } catch (Exception e) {
             health.put("feature_service_status", "UNHEALTHY");
             health.put("error_message", e.getMessage());
             health.put("doc_fee_check_successful", false);
-            health.put("insurance_check_successful", false);
         }
         
         return health;

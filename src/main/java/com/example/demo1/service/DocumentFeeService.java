@@ -20,7 +20,5 @@ public class DocumentFeeService {
         return String.format("$%.2f", fee);
     }
     
-    public boolean isInsuranceProcessingEnabled() {
-        return FeatureControlCheckUtil.isEcInsuranceRedesignEnabled();
-    }
+    // REMOVED: public boolean isInsuranceProcessingEnabled() ...
 }
