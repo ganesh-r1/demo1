@@ -10,7 +10,6 @@ public class FeatureConfigHelper {
     public Map<String, Object> buildConfiguration(boolean docFeeCapitalized, boolean insuranceRedesigned) {
         Map<String, Object> config = new HashMap<>();
         
-        // Configure based on received feature values
         if (docFeeCapitalized) {
             config.put("fee.display.format", "CAPITALIZED_Y");
             config.put("fee.calculation.multiplier", 1.15);
@@ -21,23 +20,17 @@ public class FeatureConfigHelper {
             config.put("fee.precision", 2);
         }
         
-        if (insuranceRedesigned) {
-            config.put("insurance.ui.theme", "MODERN_REDESIGN");
-            config.put("insurance.processing.algorithm", "ENHANCED");
-            config.put("insurance.validation.strict", true);
-        } else {
-            config.put("insurance.ui.theme", "CLASSIC");
-            config.put("insurance.processing.algorithm", "STANDARD");
-            config.put("insurance.validation.strict", false);
-        }
+        // REMOVE: insuranceRedesigned related code
+        config.put("insurance.ui.theme", "CLASSIC");
+        config.put("insurance.processing.algorithm", "STANDARD");
+        config.put("insurance.validation.strict", false);
         
         return config;
     }
     
     public String determineSystemMode(boolean docFeeEnabled, boolean insuranceEnabled) {
-        if (docFeeEnabled && insuranceEnabled) {
-            return "FULL_FEATURE_MODE";
-        } else if (docFeeEnabled || insuranceEnabled) {
+        // REMOVE: insuranceEnabled logic
+        if (docFeeEnabled) {
             return "PARTIAL_FEATURE_MODE";
         }
         return "BASIC_MODE";
@@ -50,10 +43,7 @@ public class FeatureConfigHelper {
             basePriority += 3;
         }
         
-        if (insuranceEnabled && "insurance".equals(documentType)) {
-            basePriority += 2;
-        }
-        
+        // REMOVE: insuranceEnabled and insurance document logic
         return Math.min(basePriority, 10); // Cap at 10
     }
 }
