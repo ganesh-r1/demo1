@@ -14,7 +14,7 @@ public class TestClass {
     
     
     public void testFunction(){
-        if(featureControlCheckUtil.isCqSetDocFeeCapitalizedWithYValueEnabled()){
+        if(true){
             System.out.println("Test Feature is enabled");   
         }else{
             System.out.println("Test Feature is disabled");
