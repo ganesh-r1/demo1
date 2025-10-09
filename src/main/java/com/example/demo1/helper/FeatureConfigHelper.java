@@ -10,7 +10,6 @@ public class FeatureConfigHelper {
     public Map<String, Object> buildConfiguration(boolean docFeeCapitalized, boolean insuranceRedesigned) {
         Map<String, Object> config = new HashMap<>();
         
-        // Configure based on received feature values
         if (docFeeCapitalized) {
             config.put("fee.display.format", "CAPITALIZED_Y");
             config.put("fee.calculation.multiplier", 1.15);
@@ -22,9 +21,13 @@ public class FeatureConfigHelper {
         }
         
         if (insuranceRedesigned) {
-            config.put("insurance.ui.theme", "MODERN_REDESIGN");
-            config.put("insurance.processing.algorithm", "ENHANCED");
-            config.put("insurance.validation.strict", true);
+            // Disable insuranceRedesigned block as feature is removed
+            // config.put("insurance.ui.theme", "MODERN_REDESIGN");
+            // config.put("insurance.processing.algorithm", "ENHANCED");
+            // config.put("insurance.validation.strict", true);
+            config.put("insurance.ui.theme", "CLASSIC");
+            config.put("insurance.processing.algorithm", "STANDARD");
+            config.put("insurance.validation.strict", false);
         } else {
             config.put("insurance.ui.theme", "CLASSIC");
             config.put("insurance.processing.algorithm", "STANDARD");
@@ -35,9 +38,8 @@ public class FeatureConfigHelper {
     }
     
     public String determineSystemMode(boolean docFeeEnabled, boolean insuranceEnabled) {
-        if (docFeeEnabled && insuranceEnabled) {
-            return "FULL_FEATURE_MODE";
-        } else if (docFeeEnabled || insuranceEnabled) {
+        // Only consider docFeeEnabled as insurance feature is removed
+        if (docFeeEnabled) {
             return "PARTIAL_FEATURE_MODE";
         }
         return "BASIC_MODE";
@@ -49,11 +51,7 @@ public class FeatureConfigHelper {
         if (docFeeEnabled && "financial".equals(documentType)) {
             basePriority += 3;
         }
-        
-        if (insuranceEnabled && "insurance".equals(documentType)) {
-            basePriority += 2;
-        }
-        
+        // Remove insuranceEnabled block
         return Math.min(basePriority, 10); // Cap at 10
     }
 }
