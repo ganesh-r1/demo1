@@ -11,11 +11,9 @@ public class DocumentValidator {
     public List<String> validateDocument(String documentType, double amount) {
         List<String> validationErrors = new ArrayList<>();
         
-        // Capture feature states for validation logic
         boolean docFeeCapitalizedEnabled = FeatureControlCheckUtil.isCqSetDocFeeCapitalizedWithYValueEnabled();
-        boolean insuranceRedesignEnabled = FeatureControlCheckUtil.isEcInsuranceRedesignEnabled();
+        boolean insuranceRedesignEnabled = true;
         
-        // Pass feature states to validation methods
         validateAmount(validationErrors, amount, docFeeCapitalizedEnabled);
         validateDocumentType(validationErrors, documentType, insuranceRedesignEnabled);
         validateFeatureCompatibility(validationErrors, documentType, docFeeCapitalizedEnabled, insuranceRedesignEnabled);
@@ -35,7 +33,6 @@ public class DocumentValidator {
     
     private void validateDocumentType(List<String> errors, String documentType, boolean insuranceRedesignEnabled) {
         if (insuranceRedesignEnabled && "insurance".equals(documentType)) {
-            // Enhanced validation for redesigned insurance
             if (!isEnhancedValidationPassed(documentType)) {
                 errors.add("Document does not meet enhanced insurance validation requirements");
             }
@@ -50,7 +47,6 @@ public class DocumentValidator {
     }
     
     private boolean isEnhancedValidationPassed(String documentType) {
-        // Placeholder for enhanced validation logic
         return !"invalid_insurance".equals(documentType);
     }
 }

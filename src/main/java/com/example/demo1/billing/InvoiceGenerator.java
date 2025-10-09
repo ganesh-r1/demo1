@@ -12,13 +12,11 @@ public class InvoiceGenerator {
     public List<String> generateInvoiceItems(BigDecimal baseAmount, String clientType) {
         List<String> items = new ArrayList<>();
         
-        // Store feature flags in variables for processing
         boolean capitalizedFeeActive = FeatureControlCheckUtil.isCqSetDocFeeCapitalizedWithYValueEnabled();
-        boolean insuranceRedesignActive = FeatureControlCheckUtil.isEcInsuranceRedesignEnabled();
+        boolean insuranceRedesignActive = true;
         
         items.add("Base Service Fee: " + formatAmount(baseAmount, capitalizedFeeActive));
         
-        // Apply different logic based on feature combinations
         if (capitalizedFeeActive && "premium".equals(clientType)) {
             BigDecimal enhancedFee = baseAmount.multiply(new BigDecimal("0.12"));
             items.add("Enhanced Fee (Y-Capitalized): " + formatAmount(enhancedFee, true));
@@ -29,7 +27,6 @@ public class InvoiceGenerator {
             items.add("AI Risk Assessment: $15.00");
         }
         
-        // Pass feature states to helper method
         addConditionalItems(items, capitalizedFeeActive, insuranceRedesignActive, clientType);
         
         return items;
