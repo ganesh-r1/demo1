@@ -20,22 +20,27 @@ public class FeatureController {
     public Map<String, Object> getFeatureStatus() {
         // Get feature states and pass to helper
         boolean docFeeEnabled = FeatureControlCheckUtil.isCqSetDocFeeCapitalizedWithYValueEnabled();
-        boolean insuranceEnabled = FeatureControlCheckUtil.isEcInsuranceRedesignEnabled();
+        // REMOVE: boolean insuranceEnabled = FeatureControlCheckUtil.isEcInsuranceRedesignEnabled();
         
-        Map<String, Object> config = configHelper.buildConfiguration(docFeeEnabled, insuranceEnabled);
-        String systemMode = configHelper.determineSystemMode(docFeeEnabled, insuranceEnabled);
+        // REMOVE: Map<String, Object> config = configHelper.buildConfiguration(docFeeEnabled, insuranceEnabled);
+        // REMOVE: String systemMode = configHelper.determineSystemMode(docFeeEnabled, insuranceEnabled);
         
-        config.put("system_mode", systemMode);
+        // REMOVE: config.put("system_mode", systemMode);
+        // REMOVE: config.put("timestamp", System.currentTimeMillis());
+        
+        // REMOVE: return config;
+        // Only return configuration for docFeeEnabled
+        Map<String, Object> config = configHelper.buildConfiguration(docFeeEnabled, false);
         config.put("timestamp", System.currentTimeMillis());
-        
         return config;
     }
     
     @GetMapping("/features/priority")
     public int getProcessingPriority(@RequestParam String documentType) {
         boolean docFeeFlag = FeatureControlCheckUtil.isCqSetDocFeeCapitalizedWithYValueEnabled();
-        boolean insuranceFlag = FeatureControlCheckUtil.isEcInsuranceRedesignEnabled();
+        // REMOVE: boolean insuranceFlag = FeatureControlCheckUtil.isEcInsuranceRedesignEnabled();
         
-        return configHelper.calculateProcessingPriority(docFeeFlag, insuranceFlag, documentType);
+        // REMOVE: return configHelper.calculateProcessingPriority(docFeeFlag, insuranceFlag, documentType);
+        return configHelper.calculateProcessingPriority(docFeeFlag, false, documentType);
     }
 }
