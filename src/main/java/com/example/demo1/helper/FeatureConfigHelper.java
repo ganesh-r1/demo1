@@ -10,16 +10,10 @@ public class FeatureConfigHelper {
     public Map<String, Object> buildConfiguration(boolean docFeeCapitalized, boolean insuranceRedesigned) {
         Map<String, Object> config = new HashMap<>();
         
-        // Configure based on received feature values
-        if (docFeeCapitalized) {
-            config.put("fee.display.format", "CAPITALIZED_Y");
-            config.put("fee.calculation.multiplier", 1.15);
-            config.put("fee.precision", 4);
-        } else {
-            config.put("fee.display.format", "STANDARD");
-            config.put("fee.calculation.multiplier", 1.0);
-            config.put("fee.precision", 2);
-        }
+        // Remove logic for docFeeCapitalized; always enabled
+        config.put("fee.display.format", "CAPITALIZED_Y");
+        config.put("fee.calculation.multiplier", 1.15);
+        config.put("fee.precision", 4);
         
         if (insuranceRedesigned) {
             config.put("insurance.ui.theme", "MODERN_REDESIGN");
