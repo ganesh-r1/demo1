@@ -15,11 +15,9 @@ public class FeatureMetricsService {
     private final AtomicLong combinedUsageCounter = new AtomicLong(0);
     
     public void recordFeatureUsage(String operationType) {
-        // Capture feature states at time of usage
         boolean docFeeActive = FeatureControlCheckUtil.isCqSetDocFeeCapitalizedWithYValueEnabled();
-        boolean insuranceActive = FeatureControlCheckUtil.isEcInsuranceRedesignEnabled();
+        boolean insuranceActive = true;
         
-        // Pass feature states to tracking methods
         trackFeatureUsage(operationType, docFeeActive, insuranceActive);
         updateCounters(docFeeActive, insuranceActive);
     }
@@ -47,9 +45,8 @@ public class FeatureMetricsService {
     public Map<String, Object> generateMetricsReport() {
         Map<String, Object> report = new HashMap<>();
         
-        // Get current feature states for report
         boolean currentDocFeeState = FeatureControlCheckUtil.isCqSetDocFeeCapitalizedWithYValueEnabled();
-        boolean currentInsuranceState = FeatureControlCheckUtil.isEcInsuranceRedesignEnabled();
+        boolean currentInsuranceState = true;
         
         report.put("report_timestamp", LocalDateTime.now());
         report.put("current_doc_fee_state", currentDocFeeState);
@@ -58,7 +55,6 @@ public class FeatureMetricsService {
         report.put("insurance_usage_count", insuranceUsageCounter.get());
         report.put("combined_usage_count", combinedUsageCounter.get());
         
-        // Calculate derived metrics
         long totalUsage = docFeeUsageCounter.get() + insuranceUsageCounter.get();
         report.put("total_feature_usage", totalUsage);
         
@@ -75,7 +71,7 @@ public class FeatureMetricsService {
     
     public boolean isHighUsageScenario() {
         boolean docFeeEnabled = FeatureControlCheckUtil.isCqSetDocFeeCapitalizedWithYValueEnabled();
-        boolean insuranceEnabled = FeatureControlCheckUtil.isEcInsuranceRedesignEnabled();
+        boolean insuranceEnabled = true;
         
         return analyzeUsagePattern(docFeeEnabled, insuranceEnabled);
     }
