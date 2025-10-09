@@ -18,30 +18,18 @@ public class DocumentFeeServiceTest {
     
     @Test
     void testCalculateDocumentFeeWithCapitalizedFeatureEnabled() {
-        try (MockedStatic<FeatureControlCheckUtil> mockedStatic = Mockito.mockStatic(FeatureControlCheckUtil.class)) {
-            // Store feature state in variable for test
-            boolean featureEnabled = true;
-            mockedStatic.when(FeatureControlCheckUtil::isCqSetDocFeeCapitalizedWithYValueEnabled)
-                      .thenReturn(featureEnabled);
-            
-            double result = documentFeeService.calculateDocumentFee(100.0);
-            assertEquals(115.0, result, 0.01);
-            
-            String displayFormat = documentFeeService.getDocumentFeeDisplayFormat(result);
-            assertTrue(displayFormat.contains("CAPITALIZED"));
-        }
+        // Feature CQ_SET_DOC_FEE_CAPITALIZED_Y is removed. Always enabled.
+        double result = documentFeeService.calculateDocumentFee(100.0);
+        assertEquals(115.0, result, 0.01);
+        String displayFormat = documentFeeService.getDocumentFeeDisplayFormat(result);
+        assertTrue(displayFormat.contains("CAPITALIZED"));
     }
     
     @Test
     void testCalculateDocumentFeeWithCapitalizedFeatureDisabled() {
-        try (MockedStatic<FeatureControlCheckUtil> mockedStatic = Mockito.mockStatic(FeatureControlCheckUtil.class)) {
-            boolean featureEnabled = false;
-            mockedStatic.when(FeatureControlCheckUtil::isCqSetDocFeeCapitalizedWithYValueEnabled)
-                      .thenReturn(featureEnabled);
-            
-            double result = documentFeeService.calculateDocumentFee(100.0);
-            assertEquals(100.0, result, 0.01);
-        }
+        // Feature CQ_SET_DOC_FEE_CAPITALIZED_Y is removed. Fee calculation always uses enhanced logic.
+        double result = documentFeeService.calculateDocumentFee(100.0);
+        assertEquals(115.0, result, 0.01);
     }
     
     @Test
@@ -64,9 +52,7 @@ public class DocumentFeeServiceTest {
     @Test
     void testCombinedFeatureScenarios() {
         try (MockedStatic<FeatureControlCheckUtil> mockedStatic = Mockito.mockStatic(FeatureControlCheckUtil.class)) {
-            // Test scenario with both features enabled
-            mockedStatic.when(FeatureControlCheckUtil::isCqSetDocFeeCapitalizedWithYValueEnabled)
-                      .thenReturn(true);
+            // CQ_SET_DOC_FEE_CAPITALIZED_Y is removed. Fee calculation always uses enhanced logic.
             mockedStatic.when(FeatureControlCheckUtil::isEcInsuranceRedesignEnabled)
                       .thenReturn(true);
             
