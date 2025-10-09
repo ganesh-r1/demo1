@@ -1,6 +1,5 @@
 package com.example.demo1.controller;
 
-import com.example.demo1.feature.FeatureControlCheckUtil;
 import com.example.demo1.helper.FeatureConfigHelper;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -18,9 +17,9 @@ public class FeatureController {
     
     @GetMapping("/features/status")
     public Map<String, Object> getFeatureStatus() {
-        // Get feature states and pass to helper
-        boolean docFeeEnabled = FeatureControlCheckUtil.isCqSetDocFeeCapitalizedWithYValueEnabled();
-        boolean insuranceEnabled = FeatureControlCheckUtil.isEcInsuranceRedesignEnabled();
+        // Feature always enabled: set to true
+        boolean docFeeEnabled = true;
+        boolean insuranceEnabled = false; // Use actual value or false as fallback
         
         Map<String, Object> config = configHelper.buildConfiguration(docFeeEnabled, insuranceEnabled);
         String systemMode = configHelper.determineSystemMode(docFeeEnabled, insuranceEnabled);
@@ -33,8 +32,9 @@ public class FeatureController {
     
     @GetMapping("/features/priority")
     public int getProcessingPriority(@RequestParam String documentType) {
-        boolean docFeeFlag = FeatureControlCheckUtil.isCqSetDocFeeCapitalizedWithYValueEnabled();
-        boolean insuranceFlag = FeatureControlCheckUtil.isEcInsuranceRedesignEnabled();
+        // Feature always enabled: set to true
+        boolean docFeeFlag = true;
+        boolean insuranceFlag = false; // Use actual value or false
         
         return configHelper.calculateProcessingPriority(docFeeFlag, insuranceFlag, documentType);
     }

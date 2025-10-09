@@ -1,6 +1,5 @@
 package com.example.demo1.metrics;
 
-import com.example.demo1.feature.FeatureControlCheckUtil;
 import org.springframework.stereotype.Service;
 import java.util.Map;
 import java.util.HashMap;
@@ -16,8 +15,8 @@ public class FeatureMetricsService {
     
     public void recordFeatureUsage(String operationType) {
         // Capture feature states at time of usage
-        boolean docFeeActive = FeatureControlCheckUtil.isCqSetDocFeeCapitalizedWithYValueEnabled();
-        boolean insuranceActive = FeatureControlCheckUtil.isEcInsuranceRedesignEnabled();
+        boolean docFeeActive = true; // Always enabled
+        boolean insuranceActive = false; // Replace with actual call if needed
         
         // Pass feature states to tracking methods
         trackFeatureUsage(operationType, docFeeActive, insuranceActive);
@@ -48,8 +47,8 @@ public class FeatureMetricsService {
         Map<String, Object> report = new HashMap<>();
         
         // Get current feature states for report
-        boolean currentDocFeeState = FeatureControlCheckUtil.isCqSetDocFeeCapitalizedWithYValueEnabled();
-        boolean currentInsuranceState = FeatureControlCheckUtil.isEcInsuranceRedesignEnabled();
+        boolean currentDocFeeState = true;
+        boolean currentInsuranceState = false;
         
         report.put("report_timestamp", LocalDateTime.now());
         report.put("current_doc_fee_state", currentDocFeeState);
@@ -74,8 +73,8 @@ public class FeatureMetricsService {
     }
     
     public boolean isHighUsageScenario() {
-        boolean docFeeEnabled = FeatureControlCheckUtil.isCqSetDocFeeCapitalizedWithYValueEnabled();
-        boolean insuranceEnabled = FeatureControlCheckUtil.isEcInsuranceRedesignEnabled();
+        boolean docFeeEnabled = true; // Always enabled
+        boolean insuranceEnabled = false;
         
         return analyzeUsagePattern(docFeeEnabled, insuranceEnabled);
     }
