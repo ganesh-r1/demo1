@@ -8,7 +8,7 @@ public class DocumentFeeService {
     
     public double calculateDocumentFee(double baseAmount) {
         if (FeatureControlCheckUtil.isCqSetDocFeeCapitalizedWithYValueEnabled()) {
-            return baseAmount * 1.15; // 15% increase when feature is enabled
+            return baseAmount * 1.15;
         }
         return baseAmount;
     }
@@ -20,7 +20,5 @@ public class DocumentFeeService {
         return String.format("$%.2f", fee);
     }
     
-    public boolean isInsuranceProcessingEnabled() {
-        return FeatureControlCheckUtil.isEcInsuranceRedesignEnabled();
-    }
+    // Remove isInsuranceProcessingEnabled method completely
 }
