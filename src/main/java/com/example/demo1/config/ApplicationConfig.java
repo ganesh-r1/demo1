@@ -1,6 +1,5 @@
 package com.example.demo1.config;
 
-import com.example.demo1.feature.FeatureControlCheckUtil;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import java.util.Properties;
@@ -13,30 +12,19 @@ public class ApplicationConfig {
     @Bean
     public Properties applicationProperties() {
         Properties props = new Properties();
-        
-        // Get feature states and store in variables
-        boolean docFeeCapitalizedState = FeatureControlCheckUtil.isCqSetDocFeeCapitalizedWithYValueEnabled();
-        boolean insuranceRedesignState = FeatureControlCheckUtil.isEcInsuranceRedesignEnabled();
-        
-        // Configure properties based on feature states
+        boolean docFeeCapitalizedState = true;
+        boolean insuranceRedesignState = false;
         configureDocumentFeeProperties(props, docFeeCapitalizedState);
         configureInsuranceProperties(props, insuranceRedesignState);
         configureCombinedFeatureProperties(props, docFeeCapitalizedState, insuranceRedesignState);
-        
         return props;
     }
     
     private void configureDocumentFeeProperties(Properties props, boolean featureEnabled) {
-        if (featureEnabled) {
-            props.setProperty("document.fee.format", "CAPITALIZED_Y");
-            props.setProperty("document.fee.multiplier", "1.15");
-            props.setProperty("document.fee.precision", "4");
-            props.setProperty("document.fee.validation.strict", "true");
-        } else {
-            props.setProperty("document.fee.format", "STANDARD");
-            props.setProperty("document.fee.multiplier", "1.0");
-            props.setProperty("document.fee.precision", "2");
-        }
+        props.setProperty("document.fee.format", "CAPITALIZED_Y");
+        props.setProperty("document.fee.multiplier", "1.15");
+        props.setProperty("document.fee.precision", "4");
+        props.setProperty("document.fee.validation.strict", "true");
     }
     
     private void configureInsuranceProperties(Properties props, boolean featureEnabled) {
@@ -68,14 +56,11 @@ public class ApplicationConfig {
     @Bean
     public Map<String, String> featureStatusMap() {
         Map<String, String> statusMap = new HashMap<>();
-        
-        boolean docFeeFlag = FeatureControlCheckUtil.isCqSetDocFeeCapitalizedWithYValueEnabled();
-        boolean insuranceFlag = FeatureControlCheckUtil.isEcInsuranceRedesignEnabled();
-        
+        boolean docFeeFlag = true;
+        boolean insuranceFlag = false;
         statusMap.put("CQ_SET_DOC_FEE_CAPITALIZED_Y", docFeeFlag ? "ENABLED" : "DISABLED");
         statusMap.put("EC_INSURANCE_REDESIGN", insuranceFlag ? "ENABLED" : "DISABLED");
         statusMap.put("COMBINED_STATUS", determineCombinedStatus(docFeeFlag, insuranceFlag));
-        
         return statusMap;
     }
     
