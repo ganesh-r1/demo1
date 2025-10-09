@@ -20,7 +20,8 @@ public class DocumentFeeService {
         return String.format("$%.2f", fee);
     }
     
+    // isInsuranceProcessingEnabled always returns false after removal
     public boolean isInsuranceProcessingEnabled() {
-        return FeatureControlCheckUtil.isEcInsuranceRedesignEnabled();
+        return false;
     }
 }
