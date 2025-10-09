@@ -10,8 +10,8 @@ import java.util.Map;
 public class FeatureControlCheckUtil {
     
     private static final String CQ_SET_DOC_FEE_CAPITALIZED_Y = "CQ_SET_DOC_FEE_CAPITALIZED_Y";
-    private static final String EC_INSURANCE_REDESIGN = "EC_INSURANCE_REDESIGN";
-    
+    // REMOVED: private static final String EC_INSURANCE_REDESIGN = "EC_INSURANCE_REDESIGN"; // Feature flag removal
+
     private static final FeatureServiceClient featureServiceClient = new FeatureServiceClient();
     private static final FeatureCacheManager cacheManager = new FeatureCacheManager();
     private static final FeatureDefaultsConfig defaultsConfig = new FeatureDefaultsConfig();
@@ -58,8 +58,10 @@ public class FeatureControlCheckUtil {
         return defaultsConfig.getDefaultValue(featureId);
     }
     
+    // REMOVED: public static boolean isEcInsuranceRedesignEnabled() { ... }
+    // Always off after removal
     public static boolean isEcInsuranceRedesignEnabled(){
-        return isFeatureEnabled(EC_INSURANCE_REDESIGN);
+        return false;
     }
     
     // Utility method to clear cache (useful for testing)
