@@ -14,11 +14,9 @@ public class ApplicationConfig {
     public Properties applicationProperties() {
         Properties props = new Properties();
         
-        // Get feature states and store in variables
         boolean docFeeCapitalizedState = FeatureControlCheckUtil.isCqSetDocFeeCapitalizedWithYValueEnabled();
-        boolean insuranceRedesignState = FeatureControlCheckUtil.isEcInsuranceRedesignEnabled();
+        boolean insuranceRedesignState = true;
         
-        // Configure properties based on feature states
         configureDocumentFeeProperties(props, docFeeCapitalizedState);
         configureInsuranceProperties(props, insuranceRedesignState);
         configureCombinedFeatureProperties(props, docFeeCapitalizedState, insuranceRedesignState);
@@ -40,15 +38,10 @@ public class ApplicationConfig {
     }
     
     private void configureInsuranceProperties(Properties props, boolean featureEnabled) {
-        if (featureEnabled) {
-            props.setProperty("insurance.ui.theme", "MODERN_REDESIGN");
-            props.setProperty("insurance.processing.enhanced", "true");
-            props.setProperty("insurance.validation.ai.enabled", "true");
-            props.setProperty("insurance.workflow.digital", "true");
-        } else {
-            props.setProperty("insurance.ui.theme", "CLASSIC");
-            props.setProperty("insurance.processing.enhanced", "false");
-        }
+        props.setProperty("insurance.ui.theme", "MODERN_REDESIGN");
+        props.setProperty("insurance.processing.enhanced", "true");
+        props.setProperty("insurance.validation.ai.enabled", "true");
+        props.setProperty("insurance.workflow.digital", "true");
     }
     
     private void configureCombinedFeatureProperties(Properties props, boolean docFeeEnabled, boolean insuranceEnabled) {
@@ -70,7 +63,7 @@ public class ApplicationConfig {
         Map<String, String> statusMap = new HashMap<>();
         
         boolean docFeeFlag = FeatureControlCheckUtil.isCqSetDocFeeCapitalizedWithYValueEnabled();
-        boolean insuranceFlag = FeatureControlCheckUtil.isEcInsuranceRedesignEnabled();
+        boolean insuranceFlag = true;
         
         statusMap.put("CQ_SET_DOC_FEE_CAPITALIZED_Y", docFeeFlag ? "ENABLED" : "DISABLED");
         statusMap.put("EC_INSURANCE_REDESIGN", insuranceFlag ? "ENABLED" : "DISABLED");
