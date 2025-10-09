@@ -21,6 +21,7 @@ public class DocumentFeeService {
     }
     
     public boolean isInsuranceProcessingEnabled() {
-        return FeatureControlCheckUtil.isEcInsuranceRedesignEnabled();
+        // Always enabled as EC_INSURANCE_REDESIGN is removed
+        return true;
     }
 }
