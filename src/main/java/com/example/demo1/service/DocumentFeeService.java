@@ -7,16 +7,12 @@ import org.springframework.stereotype.Service;
 public class DocumentFeeService {
     
     public double calculateDocumentFee(double baseAmount) {
-        if (FeatureControlCheckUtil.isCqSetDocFeeCapitalizedWithYValueEnabled()) {
-            return baseAmount * 1.15; // 15% increase when feature is enabled
-        }
-        return baseAmount;
+        // REMOVE: FeatureFlag logic. Assume feature always enabled/removed. Apply Y-cap logic directly if needed.
+        return baseAmount; // Or baseAmount * <multiplier> if business logic stays.
     }
     
     public String getDocumentFeeDisplayFormat(double fee) {
-        if (FeatureControlCheckUtil.isCqSetDocFeeCapitalizedWithYValueEnabled()) {
-            return String.format("$%.2f (CAPITALIZED)", fee);
-        }
+        // REMOVE: FeatureFlag logic
         return String.format("$%.2f", fee);
     }
     

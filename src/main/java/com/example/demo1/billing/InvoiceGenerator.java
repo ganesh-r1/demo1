@@ -11,49 +11,32 @@ public class InvoiceGenerator {
     
     public List<String> generateInvoiceItems(BigDecimal baseAmount, String clientType) {
         List<String> items = new ArrayList<>();
-        
-        // Store feature flags in variables for processing
-        boolean capitalizedFeeActive = FeatureControlCheckUtil.isCqSetDocFeeCapitalizedWithYValueEnabled();
+        // REMOVE: capitalizedFeeActive flag and logic
         boolean insuranceRedesignActive = FeatureControlCheckUtil.isEcInsuranceRedesignEnabled();
-        
-        items.add("Base Service Fee: " + formatAmount(baseAmount, capitalizedFeeActive));
-        
-        // Apply different logic based on feature combinations
-        if (capitalizedFeeActive && "premium".equals(clientType)) {
-            BigDecimal enhancedFee = baseAmount.multiply(new BigDecimal("0.12"));
-            items.add("Enhanced Fee (Y-Capitalized): " + formatAmount(enhancedFee, true));
-        }
-        
+        items.add("Base Service Fee: " + formatAmount(baseAmount, false));
+        // REMOVE: Enhanced Fee (Y-Capitalized)
         if (insuranceRedesignActive && ("insurance".equals(clientType) || "premium".equals(clientType))) {
             items.add("Digital Processing Fee: $25.00");
             items.add("AI Risk Assessment: $15.00");
         }
-        
-        // Pass feature states to helper method
-        addConditionalItems(items, capitalizedFeeActive, insuranceRedesignActive, clientType);
-        
+        addConditionalItems(items, false, insuranceRedesignActive, clientType);
         return items;
     }
     
     private void addConditionalItems(List<String> items, boolean docFeeEnabled, 
                                    boolean insuranceEnabled, String clientType) {
         if (docFeeEnabled && insuranceEnabled) {
-            items.add("Comprehensive Service Bundle: $50.00");
+            // REMOVE: Comprehensive Service Bundle
         }
-        
         if (docFeeEnabled && "corporate".equals(clientType)) {
-            items.add("Corporate Documentation Fee: $75.00");
+            // REMOVE: Corporate Documentation Fee
         }
-        
         if (insuranceEnabled && "individual".equals(clientType)) {
             items.add("Individual Enhanced Coverage: $30.00");
         }
     }
     
     private String formatAmount(BigDecimal amount, boolean useCapitalizedFormat) {
-        if (useCapitalizedFormat) {
-            return String.format("$%s (Y-CAPITALIZED)", amount);
-        }
         return String.format("$%s", amount);
     }
 }

@@ -10,32 +10,17 @@ public class DocumentValidator {
     
     public List<String> validateDocument(String documentType, double amount) {
         List<String> validationErrors = new ArrayList<>();
-        
-        // Capture feature states for validation logic
-        boolean docFeeCapitalizedEnabled = FeatureControlCheckUtil.isCqSetDocFeeCapitalizedWithYValueEnabled();
+        // REMOVE: docFeeCapitalizedEnabled and logic that depends on it
         boolean insuranceRedesignEnabled = FeatureControlCheckUtil.isEcInsuranceRedesignEnabled();
-        
-        // Pass feature states to validation methods
-        validateAmount(validationErrors, amount, docFeeCapitalizedEnabled);
         validateDocumentType(validationErrors, documentType, insuranceRedesignEnabled);
-        validateFeatureCompatibility(validationErrors, documentType, docFeeCapitalizedEnabled, insuranceRedesignEnabled);
-        
+        validateFeatureCompatibility(validationErrors, documentType, false, insuranceRedesignEnabled);
         return validationErrors;
     }
     
-    private void validateAmount(List<String> errors, double amount, boolean capitalizedFeeEnabled) {
-        if (capitalizedFeeEnabled && amount < 10.0) {
-            errors.add("Minimum amount for capitalized fee processing is $10.00");
-        }
-        
-        if (capitalizedFeeEnabled && amount > 100000.0) {
-            errors.add("Amount exceeds maximum for Y-capitalized processing");
-        }
-    }
+    // REMOVE: validateAmount method
     
     private void validateDocumentType(List<String> errors, String documentType, boolean insuranceRedesignEnabled) {
         if (insuranceRedesignEnabled && "insurance".equals(documentType)) {
-            // Enhanced validation for redesigned insurance
             if (!isEnhancedValidationPassed(documentType)) {
                 errors.add("Document does not meet enhanced insurance validation requirements");
             }
@@ -44,13 +29,10 @@ public class DocumentValidator {
     
     private void validateFeatureCompatibility(List<String> errors, String documentType, 
                                             boolean docFeeEnabled, boolean insuranceEnabled) {
-        if (docFeeEnabled && insuranceEnabled && "legacy".equals(documentType)) {
-            errors.add("Legacy documents not supported with both enhanced features enabled");
-        }
+        // REMOVE: legacy/docFeeEnabled && insuranceEnabled check
     }
     
     private boolean isEnhancedValidationPassed(String documentType) {
-        // Placeholder for enhanced validation logic
         return !"invalid_insurance".equals(documentType);
     }
 }
