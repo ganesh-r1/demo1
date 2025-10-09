@@ -9,16 +9,14 @@ import java.util.Map;
 @Component
 public class FeatureControlCheckUtil {
     
-    private static final String CQ_SET_DOC_FEE_CAPITALIZED_Y = "CQ_SET_DOC_FEE_CAPITALIZED_Y";
+    // CQ_SET_DOC_FEE_CAPITALIZED_Y feature flag removed
     private static final String EC_INSURANCE_REDESIGN = "EC_INSURANCE_REDESIGN";
     
     private static final FeatureServiceClient featureServiceClient = new FeatureServiceClient();
     private static final FeatureCacheManager cacheManager = new FeatureCacheManager();
     private static final FeatureDefaultsConfig defaultsConfig = new FeatureDefaultsConfig();
     
-    public static boolean isCqSetDocFeeCapitalizedWithYValueEnabled(){
-        return isFeatureEnabled(CQ_SET_DOC_FEE_CAPITALIZED_Y);
-    }
+    // isCqSetDocFeeCapitalizedWithYValueEnabled removed
     
     public static boolean isFeatureEnabled(String featureId){
         try {

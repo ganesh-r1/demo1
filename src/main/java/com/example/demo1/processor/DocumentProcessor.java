@@ -7,36 +7,23 @@ import org.springframework.stereotype.Component;
 public class DocumentProcessor {
     
     public void processDocument(String documentId) {
-        // Indirect reference via intermediate variables
-        boolean useCapitalizedFeeFormat = FeatureControlCheckUtil.isCqSetDocFeeCapitalizedWithYValueEnabled();
+        // Only reference insurance redesign feature now
         boolean useRedesignedInsurance = FeatureControlCheckUtil.isEcInsuranceRedesignEnabled();
         
-        String processingMode = determineProcessingMode(useCapitalizedFeeFormat, useRedesignedInsurance);
+        String processingMode = determineProcessingMode(useRedesignedInsurance);
         
         System.out.println("Processing document " + documentId + " with mode: " + processingMode);
-        
-        if (useCapitalizedFeeFormat) {
-            applyCapitalizedFeeLogic(documentId);
-        }
         
         if (useRedesignedInsurance) {
             applyRedesignedInsuranceLogic(documentId);
         }
     }
     
-    private String determineProcessingMode(boolean capitalizedFee, boolean redesignedInsurance) {
-        if (capitalizedFee && redesignedInsurance) {
-            return "ENHANCED_COMPREHENSIVE_MODE";
-        } else if (capitalizedFee) {
-            return "CAPITALIZED_Y_MODE";
-        } else if (redesignedInsurance) {
+    private String determineProcessingMode(boolean redesignedInsurance) {
+        if (redesignedInsurance) {
             return "REDESIGNED_INSURANCE_MODE";
         }
         return "STANDARD_MODE";
-    }
-    
-    private void applyCapitalizedFeeLogic(String documentId) {
-        System.out.println("Applying capitalized fee logic for: " + documentId);
     }
     
     private void applyRedesignedInsuranceLogic(String documentId) {
