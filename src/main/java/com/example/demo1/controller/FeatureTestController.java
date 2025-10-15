@@ -19,7 +19,6 @@ public class FeatureTestController {
     
     static {
         // Initialize with default test values
-        testFeatureFlags.put("CQ_SET_DOC_FEE_CAPITALIZED_Y", true);
         testFeatureFlags.put("EC_INSURANCE_REDESIGN", false);
     }
     
@@ -96,7 +95,6 @@ public class FeatureTestController {
         
         // Reset to defaults
         testFeatureFlags.clear();
-        testFeatureFlags.put("CQ_SET_DOC_FEE_CAPITALIZED_Y", true);
         testFeatureFlags.put("EC_INSURANCE_REDESIGN", false);
         
         response.put("previousState", previousState);
@@ -111,13 +109,6 @@ public class FeatureTestController {
         Map<String, Object> metadata = new HashMap<>();
         
         switch (featureId) {
-            case "CQ_SET_DOC_FEE_CAPITALIZED_Y":
-                metadata.put("description", "Enhanced document fee calculation with capitalized Y format");
-                metadata.put("category", "BILLING");
-                metadata.put("impact", "UI_AND_CALCULATION");
-                metadata.put("defaultValue", true);
-                break;
-                
             case "EC_INSURANCE_REDESIGN":
                 metadata.put("description", "Redesigned insurance experience with AI-powered features");
                 metadata.put("category", "UI_ENHANCEMENT");
