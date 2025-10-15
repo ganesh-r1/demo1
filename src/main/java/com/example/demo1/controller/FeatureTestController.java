@@ -14,11 +14,11 @@ import java.time.LocalDateTime;
 @CrossOrigin(origins = "*")
 public class FeatureTestController {
     
-    // Simulated feature flag storage for testing
+    // Feature flags usage removed: CQ_SET_DOC_FEE_CAPITALIZED_Y always true
     private static final Map<String, Boolean> testFeatureFlags = new HashMap<>();
     
     static {
-        // Initialize with default test values
+        // Initialize with CQ_SET_DOC_FEE_CAPITALIZED_Y always true, EC_INSURANCE_REDESIGN as existing
         testFeatureFlags.put("CQ_SET_DOC_FEE_CAPITALIZED_Y", true);
         testFeatureFlags.put("EC_INSURANCE_REDESIGN", false);
     }
@@ -27,15 +27,19 @@ public class FeatureTestController {
     public Map<String, Object> getFeatureValue(@RequestParam String featureId) {
         Map<String, Object> response = new HashMap<>();
         
-        // Get feature value from test storage
-        boolean enabled = testFeatureFlags.getOrDefault(featureId, false);
+        boolean enabled;
+        // Remove feature flag check for CQ_SET_DOC_FEE_CAPITALIZED_Y, always true
+        if ("CQ_SET_DOC_FEE_CAPITALIZED_Y".equals(featureId)) {
+            enabled = true;
+        } else {
+            enabled = testFeatureFlags.getOrDefault(featureId, false);
+        }
         
         response.put("featureId", featureId);
         response.put("enabled", enabled);
         response.put("timestamp", LocalDateTime.now().toString());
         response.put("source", "TEST_ENDPOINT");
         
-        // Add metadata about the feature
         response.put("metadata", getFeatureMetadata(featureId, enabled));
         
         return response;
@@ -45,10 +49,17 @@ public class FeatureTestController {
     public Map<String, Object> toggleFeature(@RequestParam String featureId) {
         Map<String, Object> response = new HashMap<>();
         
-        // Toggle the feature value
-        boolean currentValue = testFeatureFlags.getOrDefault(featureId, false);
-        boolean newValue = !currentValue;
-        testFeatureFlags.put(featureId, newValue);
+        boolean currentValue;
+        boolean newValue;
+        // Prevent toggling CQ_SET_DOC_FEE_CAPITALIZED_Y, always true
+        if ("CQ_SET_DOC_FEE_CAPITALIZED_Y".equals(featureId)) {
+            currentValue = true;
+            newValue = true;
+        } else {
+            currentValue = testFeatureFlags.getOrDefault(featureId, false);
+            newValue = !currentValue;
+            testFeatureFlags.put(featureId, newValue);
+        }
         
         response.put("featureId", featureId);
         response.put("previousValue", currentValue);
@@ -64,8 +75,15 @@ public class FeatureTestController {
                                         @RequestParam boolean enabled) {
         Map<String, Object> response = new HashMap<>();
         
-        boolean previousValue = testFeatureFlags.getOrDefault(featureId, false);
-        testFeatureFlags.put(featureId, enabled);
+        boolean previousValue;
+        // Prevent setting CQ_SET_DOC_FEE_CAPITALIZED_Y, always true
+        if ("CQ_SET_DOC_FEE_CAPITALIZED_Y".equals(featureId)) {
+            previousValue = true;
+            enabled = true;
+        } else {
+            previousValue = testFeatureFlags.getOrDefault(featureId, false);
+            testFeatureFlags.put(featureId, enabled);
+        }
         
         response.put("featureId", featureId);
         response.put("previousValue", previousValue);
@@ -80,9 +98,12 @@ public class FeatureTestController {
     public Map<String, Object> getAllFeatures() {
         Map<String, Object> response = new HashMap<>();
         
-        response.put("features", new HashMap<>(testFeatureFlags));
+        // Always report CQ_SET_DOC_FEE_CAPITALIZED_Y as true
+        Map<String, Boolean> features = new HashMap<>(testFeatureFlags);
+        features.put("CQ_SET_DOC_FEE_CAPITALIZED_Y", true);
+        response.put("features", features);
         response.put("timestamp", LocalDateTime.now().toString());
-        response.put("totalFeatures", testFeatureFlags.size());
+        response.put("totalFeatures", features.size());
         
         return response;
     }
@@ -91,10 +112,8 @@ public class FeatureTestController {
     public Map<String, Object> resetFeatures() {
         Map<String, Object> response = new HashMap<>();
         
-        // Store previous state
         Map<String, Boolean> previousState = new HashMap<>(testFeatureFlags);
         
-        // Reset to defaults
         testFeatureFlags.clear();
         testFeatureFlags.put("CQ_SET_DOC_FEE_CAPITALIZED_Y", true);
         testFeatureFlags.put("EC_INSURANCE_REDESIGN", false);
@@ -116,15 +135,16 @@ public class FeatureTestController {
                 metadata.put("category", "BILLING");
                 metadata.put("impact", "UI_AND_CALCULATION");
                 metadata.put("defaultValue", true);
+                enabled = true;
                 break;
-                
+                 
             case "EC_INSURANCE_REDESIGN":
                 metadata.put("description", "Redesigned insurance experience with AI-powered features");
                 metadata.put("category", "UI_ENHANCEMENT");
                 metadata.put("impact", "FULL_UI_REDESIGN");
                 metadata.put("defaultValue", false);
                 break;
-                
+                 
             default:
                 metadata.put("description", "Unknown feature");
                 metadata.put("category", "UNKNOWN");
@@ -132,10 +152,8 @@ public class FeatureTestController {
                 metadata.put("defaultValue", false);
                 break;
         }
-        
         metadata.put("currentValue", enabled);
         metadata.put("lastChecked", LocalDateTime.now().toString());
-        
         return metadata;
     }
 }
