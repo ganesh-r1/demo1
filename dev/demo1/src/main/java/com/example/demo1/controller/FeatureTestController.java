@@ -13,14 +13,11 @@ import java.time.LocalDateTime;
 @RequestMapping("/api/test")
 @CrossOrigin(origins = "*")
 public class FeatureTestController {
-    
     private static final Map<String, Boolean> testFeatureFlags = new HashMap<>();
-    
     static {
         testFeatureFlags.put("CQ_SET_DOC_FEE_CAPITALIZED_Y", true);
         testFeatureFlags.put("EC_INSURANCE_REDESIGN", true);
     }
-    
     @GetMapping("/feature")
     public Map<String, Object> getFeatureValue(@RequestParam String featureId) {
         Map<String, Object> response = new HashMap<>();
@@ -32,7 +29,6 @@ public class FeatureTestController {
         response.put("metadata", getFeatureMetadata(featureId, enabled));
         return response;
     }
-    
     @GetMapping("/feature/toggle")
     public Map<String, Object> toggleFeature(@RequestParam String featureId) {
         Map<String, Object> response = new HashMap<>();
@@ -46,7 +42,6 @@ public class FeatureTestController {
         response.put("action", "TOGGLED");
         return response;
     }
-    
     @GetMapping("/feature/set")
     public Map<String, Object> setFeature(@RequestParam String featureId, 
                                         @RequestParam boolean enabled) {
@@ -60,7 +55,6 @@ public class FeatureTestController {
         response.put("action", "SET");
         return response;
     }
-    
     @GetMapping("/feature/all")
     public Map<String, Object> getAllFeatures() {
         Map<String, Object> response = new HashMap<>();
@@ -69,7 +63,6 @@ public class FeatureTestController {
         response.put("totalFeatures", testFeatureFlags.size());
         return response;
     }
-    
     @GetMapping("/feature/reset")
     public Map<String, Object> resetFeatures() {
         Map<String, Object> response = new HashMap<>();
@@ -83,7 +76,6 @@ public class FeatureTestController {
         response.put("action", "RESET_TO_DEFAULTS");
         return response;
     }
-    
     private Map<String, Object> getFeatureMetadata(String featureId, boolean enabled) {
         Map<String, Object> metadata = new HashMap<>();
         switch (featureId) {
@@ -93,14 +85,12 @@ public class FeatureTestController {
                 metadata.put("impact", "UI_AND_CALCULATION");
                 metadata.put("defaultValue", true);
                 break;
-                
             case "EC_INSURANCE_REDESIGN":
                 metadata.put("description", "Redesigned insurance experience with AI-powered features");
                 metadata.put("category", "UI_ENHANCEMENT");
                 metadata.put("impact", "FULL_UI_REDESIGN");
                 metadata.put("defaultValue", true);
                 break;
-                
             default:
                 metadata.put("description", "Unknown feature");
                 metadata.put("category", "UNKNOWN");
