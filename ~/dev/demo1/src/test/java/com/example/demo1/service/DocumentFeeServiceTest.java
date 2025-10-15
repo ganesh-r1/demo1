@@ -1,0 +1,57 @@
+package com.example.demo1.service;
+
+import com.example.demo1.feature.FeatureControlCheckUtil;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.mockito.MockedStatic;
+import org.mockito.Mockito;
+import static org.junit.jupiter.api.Assertions.*;
+
+public class DocumentFeeServiceTest {
+    
+    private DocumentFeeService documentFeeService;
+    
+    @BeforeEach
+    void setUp() {
+        documentFeeService = new DocumentFeeService();
+    }
+    
+    @Test
+    void testCalculateDocumentFee() {
+        double result = documentFeeService.calculateDocumentFee(100.0);
+        assertEquals(100.0, result, 0.01);
+
+        String displayFormat = documentFeeService.getDocumentFeeDisplayFormat(result);
+        assertFalse(displayFormat.contains("CAPITALIZED"));
+    }
+    
+    @Test
+    void testInsuranceProcessingFeatureCheck() {
+        try (MockedStatic<FeatureControlCheckUtil> mockedStatic = Mockito.mockStatic(FeatureControlCheckUtil.class)) {
+            boolean insuranceEnabled = true;
+            mockedStatic.when(FeatureControlCheckUtil::isEcInsuranceRedesignEnabled)
+                      .thenReturn(insuranceEnabled);
+            
+            assertTrue(documentFeeService.isInsuranceProcessingEnabled());
+            
+            mockedStatic.when(FeatureControlCheckUtil::isEcInsuranceRedesignEnabled)
+                      .thenReturn(false);
+            
+            assertFalse(documentFeeService.isInsuranceProcessingEnabled());
+        }
+    }
+    
+    @Test
+    void testCombinedFeatureScenarios() {
+        try (MockedStatic<FeatureControlCheckUtil> mockedStatic = Mockito.mockStatic(FeatureControlCheckUtil.class)) {
+            mockedStatic.when(FeatureControlCheckUtil::isEcInsuranceRedesignEnabled)
+                      .thenReturn(true);
+            
+            double feeResult = documentFeeService.calculateDocumentFee(200.0);
+            boolean insuranceResult = documentFeeService.isInsuranceProcessingEnabled();
+            
+            assertEquals(200.0, feeResult, 0.01);
+            assertTrue(insuranceResult);
+        }
+    }
+}
