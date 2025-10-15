@@ -12,20 +12,10 @@ public class FeatureDefaultsConfig {
     
     static {
         // Initialize default feature values
-        DEFAULT_FEATURE_VALUES.put("CQ_SET_DOC_FEE_CAPITALIZED_Y", true);
+        // CQ_SET_DOC_FEE_CAPITALIZED_Y feature flag always true; safe to remove flag and related logic.
         DEFAULT_FEATURE_VALUES.put("EC_INSURANCE_REDESIGN", false);
         
         // Initialize feature metadata
-        FEATURE_METADATA.put("CQ_SET_DOC_FEE_CAPITALIZED_Y", 
-            new FeatureMetadata(
-                "CQ_SET_DOC_FEE_CAPITALIZED_Y",
-                "Enhanced document fee calculation with capitalized Y format",
-                "BILLING",
-                "UI_AND_CALCULATION",
-                true
-            )
-        );
-        
         FEATURE_METADATA.put("EC_INSURANCE_REDESIGN", 
             new FeatureMetadata(
                 "EC_INSURANCE_REDESIGN",
@@ -41,6 +31,10 @@ public class FeatureDefaultsConfig {
      * Get default value for a feature
      */
     public boolean getDefaultValue(String featureId) {
+        // CQ_SET_DOC_FEE_CAPITALIZED_Y is now always true, so force return true if requested
+        if ("CQ_SET_DOC_FEE_CAPITALIZED_Y".equals(featureId)) {
+            return true;
+        }
         return DEFAULT_FEATURE_VALUES.getOrDefault(featureId, false);
     }
     
@@ -48,6 +42,9 @@ public class FeatureDefaultsConfig {
      * Check if feature is known/configured
      */
     public boolean isKnownFeature(String featureId) {
+        if ("CQ_SET_DOC_FEE_CAPITALIZED_Y".equals(featureId)) {
+            return true;
+        }
         return DEFAULT_FEATURE_VALUES.containsKey(featureId);
     }
     
@@ -55,13 +52,24 @@ public class FeatureDefaultsConfig {
      * Get all default feature values
      */
     public Map<String, Boolean> getAllDefaults() {
-        return new HashMap<>(DEFAULT_FEATURE_VALUES);
+        Map<String, Boolean> result = new HashMap<>(DEFAULT_FEATURE_VALUES);
+        result.put("CQ_SET_DOC_FEE_CAPITALIZED_Y", true);
+        return result;
     }
     
     /**
      * Get feature metadata
      */
     public FeatureMetadata getFeatureMetadata(String featureId) {
+        if ("CQ_SET_DOC_FEE_CAPITALIZED_Y".equals(featureId)) {
+            return new FeatureMetadata(
+                "CQ_SET_DOC_FEE_CAPITALIZED_Y",
+                "Enhanced document fee calculation with capitalized Y format",
+                "BILLING",
+                "UI_AND_CALCULATION",
+                true
+            );
+        }
         return FEATURE_METADATA.get(featureId);
     }
     
@@ -69,21 +77,29 @@ public class FeatureDefaultsConfig {
      * Get all known feature IDs
      */
     public java.util.Set<String> getKnownFeatureIds() {
-        return DEFAULT_FEATURE_VALUES.keySet();
+        java.util.Set<String> ids = new java.util.HashSet<>(DEFAULT_FEATURE_VALUES.keySet());
+        ids.add("CQ_SET_DOC_FEE_CAPITALIZED_Y");
+        return ids;
     }
     
     /**
      * Add or update a feature default (for testing/configuration)
      */
     public void setDefaultValue(String featureId, boolean defaultValue) {
-        DEFAULT_FEATURE_VALUES.put(featureId, defaultValue);
+        // Ignore attempts to update CQ_SET_DOC_FEE_CAPITALIZED_Y; it's always true.
+        if (!"CQ_SET_DOC_FEE_CAPITALIZED_Y".equals(featureId)) {
+            DEFAULT_FEATURE_VALUES.put(featureId, defaultValue);
+        }
     }
     
     /**
      * Add feature metadata
      */
     public void setFeatureMetadata(String featureId, FeatureMetadata metadata) {
-        FEATURE_METADATA.put(featureId, metadata);
+        // Ignore attempts to update CQ_SET_DOC_FEE_CAPITALIZED_Y metadata; it's always present and true.
+        if (!"CQ_SET_DOC_FEE_CAPITALIZED_Y".equals(featureId)) {
+            FEATURE_METADATA.put(featureId, metadata);
+        }
     }
     
     /**
