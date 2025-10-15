@@ -10,7 +10,7 @@ import java.util.Map;
 public class FeatureControlCheckUtil {
     
     private static final String CQ_SET_DOC_FEE_CAPITALIZED_Y = "CQ_SET_DOC_FEE_CAPITALIZED_Y";
-    private static final String EC_INSURANCE_REDESIGN = "EC_INSURANCE_REDESIGN";
+    // Removed EC_INSURANCE_REDESIGN feature flag constant as it is always enabled.
     
     private static final FeatureServiceClient featureServiceClient = new FeatureServiceClient();
     private static final FeatureCacheManager cacheManager = new FeatureCacheManager();
@@ -58,8 +58,9 @@ public class FeatureControlCheckUtil {
         return defaultsConfig.getDefaultValue(featureId);
     }
     
-    public static boolean isEcInsuranceRedesignEnabled(){
-        return isFeatureEnabled(EC_INSURANCE_REDESIGN);
+    // isEcInsuranceRedesignEnabled always returns true based on feature flag value; method can be simplified.
+    public static boolean isEcInsuranceRedesignEnabled() {
+        return true;
     }
     
     // Utility method to clear cache (useful for testing)
