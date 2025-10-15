@@ -6,7 +6,7 @@
 class InsuranceUIController {
     constructor() {
         this.featureConfig = null;
-        this.isRedesignEnabled = false;
+        this.isRedesignEnabled = true;
         this.uiComponents = {};
         this.eventHandlers = {};
         
@@ -22,8 +22,8 @@ class InsuranceUIController {
             const response = await fetch('/api/features/status');
             this.featureConfig = await response.json();
             
-            // Extract insurance redesign state from server response
-            this.isRedesignEnabled = this.featureConfig.ec_insurance_redesign_status || false;
+            // Insurance redesign is always enabled
+            this.isRedesignEnabled = true;
             
             console.log('Insurance UI Controller initialized with redesign feature:', this.isRedesignEnabled);
             
@@ -33,8 +33,8 @@ class InsuranceUIController {
             
         } catch (error) {
             console.error('Failed to initialize Insurance UI Controller:', error);
-            // Fallback to standard mode if feature check fails
-            this.isRedesignEnabled = false;
+            // Always enabled
+            this.isRedesignEnabled = true;
             this.initializeUI();
         }
     }
@@ -44,15 +44,11 @@ class InsuranceUIController {
      */
     initializeUI() {
         // Pass feature state to UI initialization methods
-        this.setupNavigationUI(this.isRedesignEnabled);
-        this.configureClaimsInterface(this.isRedesignEnabled);
-        this.initializeProductDisplay(this.isRedesignEnabled);
+        this.setupNavigationUI(true);
+        this.configureClaimsInterface(true);
+        this.initializeProductDisplay(true);
         
-        if (this.isRedesignEnabled) {
-            this.enableEnhancedFeatures();
-        } else {
-            this.enableStandardFeatures();
-        }
+        this.enableEnhancedFeatures();
     }
 
     /**
@@ -62,16 +58,10 @@ class InsuranceUIController {
         const navContainer = document.querySelector('.navigation-container');
         if (!navContainer) return;
 
-        if (redesignEnabled) {
-            // Enhanced navigation with modern styling
-            navContainer.classList.add('modern-nav');
-            this.addAINavigationItems();
-            this.enableSmartSearch();
-        } else {
-            // Standard navigation
-            navContainer.classList.add('standard-nav');
-            this.addStandardNavigationItems();
-        }
+        // Enhanced navigation with modern styling
+        navContainer.classList.add('modern-nav');
+        this.addAINavigationItems();
+        this.enableSmartSearch();
     }
 
     /**
@@ -81,13 +71,9 @@ class InsuranceUIController {
         const claimsSection = document.querySelector('.claims-section');
         if (!claimsSection) return;
 
-        if (redesignEnabled) {
-            this.initializeAIClaimsProcessor();
-            this.enablePhotoClaimsUpload();
-            this.setupRealTimeClaimsTracking();
-        } else {
-            this.initializeStandardClaimsForm();
-        }
+        this.initializeAIClaimsProcessor();
+        this.enablePhotoClaimsUpload();
+        this.setupRealTimeClaimsTracking();
     }
 
     /**
@@ -98,7 +84,7 @@ class InsuranceUIController {
         if (!productGrid) return;
 
         // Use feature state to determine product display mode
-        const displayConfig = this.getProductDisplayConfig(redesignEnabled);
+        const displayConfig = this.getProductDisplayConfig(true);
         this.renderProductCards(displayConfig);
     }
 
@@ -106,31 +92,17 @@ class InsuranceUIController {
      * Get product display configuration based on feature state
      */
     getProductDisplayConfig(redesignEnabled) {
-        if (redesignEnabled) {
-            return {
-                layout: 'enhanced-grid',
-                showAIFeatures: true,
-                enableInteractiveCards: true,
-                products: [
-                    'AI-Powered Risk Assessment',
-                    'Digital-First Coverage',
-                    'Smart Monitoring',
-                    'Predictive Analytics'
-                ]
-            };
-        } else {
-            return {
-                layout: 'standard-list',
-                showAIFeatures: false,
-                enableInteractiveCards: false,
-                products: [
-                    'Basic Auto Insurance',
-                    'Home Insurance',
-                    'Life Insurance',
-                    'Health Insurance'
-                ]
-            };
-        }
+        return {
+            layout: 'enhanced-grid',
+            showAIFeatures: true,
+            enableInteractiveCards: true,
+            products: [
+                'AI-Powered Risk Assessment',
+                'Digital-First Coverage',
+                'Smart Monitoring',
+                'Predictive Analytics'
+            ]
+        };
     }
 
     /**
@@ -151,17 +123,10 @@ class InsuranceUIController {
 
     /**
      * Enable standard features when redesign is not active
+     * (Unreachable, so method kept for legacy only)
      */
     enableStandardFeatures() {
-        console.log('Enabling standard insurance features...');
-        
-        // Initialize basic components
-        this.initializeBasicForms();
-        this.enableStandardNotifications();
-        this.setupStandardDashboard();
-        
-        // Add standard event listeners
-        this.bindStandardEventHandlers();
+        // No-op since standard features are never enabled anymore
     }
 
     /**
@@ -269,35 +234,17 @@ class InsuranceUIController {
 
     /**
      * Initialize standard claims form (standard feature)
+     * (Unreachable, for legacy only)
      */
     initializeStandardClaimsForm() {
-        console.log('Initializing standard claims form...');
-        
-        const claimsForm = document.querySelector('.standard-claims-form');
-        if (!claimsForm) return;
-
-        claimsForm.addEventListener('submit', (event) => {
-            event.preventDefault();
-            this.submitStandardClaim(new FormData(claimsForm));
-        });
+        // No operation. Unreachable code.
     }
 
     /**
-     * Submit standard claim
+     * Submit standard claim (legacy)
      */
     async submitStandardClaim(formData) {
-        try {
-            const response = await fetch('/api/claims/submit', {
-                method: 'POST',
-                body: formData
-            });
-            
-            const result = await response.json();
-            this.displayClaimSubmissionResult(result);
-            
-        } catch (error) {
-            console.error('Claim submission failed:', error);
-        }
+        // No operation. Standard claims are never processed.
     }
 
     /**
@@ -307,12 +254,7 @@ class InsuranceUIController {
         // Common event handlers
         this.bindCommonEventHandlers();
         
-        // Feature-specific handlers
-        if (this.isRedesignEnabled) {
-            this.bindEnhancedEventHandlers();
-        } else {
-            this.bindStandardEventHandlers();
-        }
+        this.bindEnhancedEventHandlers();
     }
 
     /**
@@ -340,19 +282,10 @@ class InsuranceUIController {
 
     /**
      * Bind standard event handlers for classic UI
+     * (Unreachable, for legacy only)
      */
     bindStandardEventHandlers() {
-        // Basic search
-        const basicSearch = document.querySelector('.basic-search-input');
-        if (basicSearch) {
-            basicSearch.addEventListener('input', (e) => this.performBasicSearch(e.target.value));
-        }
-
-        // Standard form validations
-        const forms = document.querySelectorAll('.standard-form');
-        forms.forEach(form => {
-            form.addEventListener('submit', (e) => this.validateStandardForm(e));
-        });
+        // No operation. UI always in enhanced mode.
     }
 
     /**
@@ -386,14 +319,10 @@ class InsuranceUIController {
 
     /**
      * Perform basic search (standard feature)
+     * (Unreachable)
      */
     performBasicSearch(query) {
-        const items = document.querySelectorAll('.searchable-item');
-        items.forEach(item => {
-            const text = item.textContent.toLowerCase();
-            const matches = text.includes(query.toLowerCase());
-            item.style.display = matches ? 'block' : 'none';
-        });
+        // No operation.
     }
 
     /**
@@ -401,23 +330,17 @@ class InsuranceUIController {
      */
     getFeatureConfig() {
         return {
-            redesignEnabled: this.isRedesignEnabled,
+            redesignEnabled: true,
             featureConfig: this.featureConfig
         };
     }
 
     /**
      * Update UI when feature configuration changes
+     * (No-op since redesign is always enabled)
      */
     updateFeatureConfiguration(newConfig) {
-        const previousState = this.isRedesignEnabled;
-        this.isRedesignEnabled = newConfig.ec_insurance_redesign_status || false;
-        
-        // Reinitialize UI if feature state changed
-        if (previousState !== this.isRedesignEnabled) {
-            console.log('Feature state changed, reinitializing UI...');
-            this.initializeUI();
-        }
+        // Redesign always enabled; nothing to do
     }
 }
 

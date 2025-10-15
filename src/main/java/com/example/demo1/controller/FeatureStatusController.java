@@ -22,7 +22,8 @@ public class FeatureStatusController {
         
         // Get current feature flag states
         boolean docFeeCapitalizedEnabled = FeatureControlCheckUtil.isCqSetDocFeeCapitalizedWithYValueEnabled();
-        boolean insuranceRedesignEnabled = FeatureControlCheckUtil.isEcInsuranceRedesignEnabled();
+        // boolean insuranceRedesignEnabled = FeatureControlCheckUtil.isEcInsuranceRedesignEnabled();
+        boolean insuranceRedesignEnabled = true;
         
         // Add individual feature statuses
         response.put("cq_set_doc_fee_capitalized_y_status", docFeeCapitalizedEnabled);
@@ -40,27 +41,31 @@ public class FeatureStatusController {
     }
     
     private Map<String, Object> buildFeatureConfiguration(boolean docFeeEnabled, boolean insuranceEnabled) {
+        // insuranceEnabled is always true; docFeeEnabled is controlled by its feature flag
         return Collections.emptyMap();
     }
     
     private String determineSystemMode(boolean docFeeEnabled, boolean insuranceEnabled) {
+        // insuranceEnabled is always true
         if (docFeeEnabled && insuranceEnabled) {
             return "PREMIUM_ENHANCED";
         } else if (docFeeEnabled) {
-            return "DOC_FEE_ENHANCED";
+            // This branch is unreachable (since insuranceEnabled is always true)
+            // return "DOC_FEE_ENHANCED";
         } else if (insuranceEnabled) {
             return "INSURANCE_ENHANCED";
         }
-        return "STANDARD";
+        return "STANDARD"; // Also unreachable
     }
     
     private String determinePriorityLevel(boolean docFeeEnabled, boolean insuranceEnabled) {
+        // insuranceEnabled is always true
         if (docFeeEnabled && insuranceEnabled) {
             return "HIGH";
         } else if (docFeeEnabled || insuranceEnabled) {
             return "MEDIUM";
         }
-        return "NORMAL";
+        return "NORMAL"; // Unreachable
     }
     
     @GetMapping("/status/detailed")
@@ -69,7 +74,8 @@ public class FeatureStatusController {
         
         // Get feature states
         boolean docFeeEnabled = FeatureControlCheckUtil.isCqSetDocFeeCapitalizedWithYValueEnabled();
-        boolean insuranceEnabled = FeatureControlCheckUtil.isEcInsuranceRedesignEnabled();
+        // boolean insuranceEnabled = FeatureControlCheckUtil.isEcInsuranceRedesignEnabled();
+        boolean insuranceEnabled = true;
         
         // Detailed feature information
         Map<String, Object> docFeeDetails = new HashMap<>();
@@ -84,7 +90,7 @@ public class FeatureStatusController {
         insuranceDetails.put("feature_name", "EC_INSURANCE_REDESIGN");
         insuranceDetails.put("description", "Redesigned insurance experience with AI-powered features");
         insuranceDetails.put("impact_areas", new String[]{"claims", "ui_theme", "ai_features", "risk_assessment"});
-        insuranceDetails.put("ui_changes", insuranceEnabled ? "Modern redesigned insurance interface" : "Classic insurance UI");
+        insuranceDetails.put("ui_changes", "Modern redesigned insurance interface");
         
         response.put("cq_set_doc_fee_capitalized_y", docFeeDetails);
         response.put("ec_insurance_redesign", insuranceDetails);
@@ -110,12 +116,13 @@ public class FeatureStatusController {
     }
     
     private String calculatePerformanceImpact(boolean docFeeEnabled, boolean insuranceEnabled) {
+        // insuranceEnabled is always true
         if (docFeeEnabled && insuranceEnabled) {
             return "MODERATE"; // Both features together have moderate impact
         } else if (docFeeEnabled || insuranceEnabled) {
             return "LOW"; // Single feature has low impact
         }
-        return "MINIMAL"; // No enhanced features
+        return "MINIMAL"; // Unreachable
     }
     
     @GetMapping("/status/health")
@@ -125,7 +132,8 @@ public class FeatureStatusController {
         try {
             // Check if feature control utility is accessible
             boolean docFeeCheck = FeatureControlCheckUtil.isCqSetDocFeeCapitalizedWithYValueEnabled();
-            boolean insuranceCheck = FeatureControlCheckUtil.isEcInsuranceRedesignEnabled();
+            // boolean insuranceCheck = FeatureControlCheckUtil.isEcInsuranceRedesignEnabled();
+            boolean insuranceCheck = true;
             
             health.put("feature_service_status", "HEALTHY");
             health.put("doc_fee_check_successful", true);
