@@ -13,7 +13,6 @@ public class FeatureDefaultsConfig {
     static {
         DEFAULT_FEATURE_VALUES.put("CQ_SET_DOC_FEE_CAPITALIZED_Y", true);
         DEFAULT_FEATURE_VALUES.put("EC_INSURANCE_REDESIGN", true);
-        
         FEATURE_METADATA.put("CQ_SET_DOC_FEE_CAPITALIZED_Y", 
             new FeatureMetadata(
                 "CQ_SET_DOC_FEE_CAPITALIZED_Y",
@@ -23,7 +22,6 @@ public class FeatureDefaultsConfig {
                 true
             )
         );
-        
         FEATURE_METADATA.put("EC_INSURANCE_REDESIGN", 
             new FeatureMetadata(
                 "EC_INSURANCE_REDESIGN",
@@ -34,42 +32,33 @@ public class FeatureDefaultsConfig {
             )
         );
     }
-    
     public boolean getDefaultValue(String featureId) {
         return DEFAULT_FEATURE_VALUES.getOrDefault(featureId, false);
     }
-    
     public boolean isKnownFeature(String featureId) {
         return DEFAULT_FEATURE_VALUES.containsKey(featureId);
     }
-    
     public Map<String, Boolean> getAllDefaults() {
         return new HashMap<>(DEFAULT_FEATURE_VALUES);
     }
-    
     public FeatureMetadata getFeatureMetadata(String featureId) {
         return FEATURE_METADATA.get(featureId);
     }
-    
     public java.util.Set<String> getKnownFeatureIds() {
         return DEFAULT_FEATURE_VALUES.keySet();
     }
-    
     public void setDefaultValue(String featureId, boolean defaultValue) {
         DEFAULT_FEATURE_VALUES.put(featureId, defaultValue);
     }
-    
     public void setFeatureMetadata(String featureId, FeatureMetadata metadata) {
         FEATURE_METADATA.put(featureId, metadata);
     }
-    
     public static class FeatureMetadata {
         private final String featureId;
         private final String description;
         private final String category;
         private final String impact;
         private final boolean defaultValue;
-        
         public FeatureMetadata(String featureId, String description, String category, 
                              String impact, boolean defaultValue) {
             this.featureId = featureId;
@@ -78,13 +67,11 @@ public class FeatureDefaultsConfig {
             this.impact = impact;
             this.defaultValue = defaultValue;
         }
-        
         public String getFeatureId() { return featureId; }
         public String getDescription() { return description; }
         public String getCategory() { return category; }
         public String getImpact() { return impact; }
         public boolean getDefaultValue() { return defaultValue; }
-        
         @Override
         public String toString() {
             return String.format("FeatureMetadata{featureId='%s', description='%s', category='%s', impact='%s', defaultValue=%s}", 
