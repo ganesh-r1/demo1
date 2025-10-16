@@ -13,7 +13,7 @@ public class FeatureDefaultsConfig {
     static {
         // Initialize default feature values
         DEFAULT_FEATURE_VALUES.put("CQ_SET_DOC_FEE_CAPITALIZED_Y", true);
-        DEFAULT_FEATURE_VALUES.put("EC_INSURANCE_REDESIGN", false);
+        DEFAULT_FEATURE_VALUES.put("EC_INSURANCE_REDESIGN", true);
         
         // Initialize feature metadata
         FEATURE_METADATA.put("CQ_SET_DOC_FEE_CAPITALIZED_Y", 
@@ -32,7 +32,7 @@ public class FeatureDefaultsConfig {
                 "Redesigned insurance experience with AI-powered features",
                 "UI_ENHANCEMENT",
                 "FULL_UI_REDESIGN",
-                false
+                true
             )
         );
     }

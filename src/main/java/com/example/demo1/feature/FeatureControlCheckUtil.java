@@ -10,7 +10,6 @@ import java.util.Map;
 public class FeatureControlCheckUtil {
     
     private static final String CQ_SET_DOC_FEE_CAPITALIZED_Y = "CQ_SET_DOC_FEE_CAPITALIZED_Y";
-    private static final String EC_INSURANCE_REDESIGN = "EC_INSURANCE_REDESIGN";
     
     private static final FeatureServiceClient featureServiceClient = new FeatureServiceClient();
     private static final FeatureCacheManager cacheManager = new FeatureCacheManager();
@@ -59,7 +58,7 @@ public class FeatureControlCheckUtil {
     }
     
     public static boolean isEcInsuranceRedesignEnabled(){
-        return isFeatureEnabled(EC_INSURANCE_REDESIGN);
+        return true;
     }
     
     // Utility method to clear cache (useful for testing)
