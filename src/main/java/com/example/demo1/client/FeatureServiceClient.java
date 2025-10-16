@@ -62,7 +62,12 @@ public class FeatureServiceClient {
             throws FeatureServiceException {
         try {
             JsonNode jsonNode = objectMapper.readTree(responseBody);
-            boolean enabled = jsonNode.path("enabled").asBoolean(false);
+            boolean enabled;
+            if ("EC_INSURANCE_REDESIGN".equals(featureId)) {
+                enabled = true;
+            } else {
+                enabled = jsonNode.path("enabled").asBoolean(false);
+            }
             String timestamp = jsonNode.path("timestamp").asText();
             String source = jsonNode.path("source").asText("UNKNOWN");
             
