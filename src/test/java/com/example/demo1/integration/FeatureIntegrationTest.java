@@ -30,16 +30,17 @@ public class FeatureIntegrationTest {
             boolean docFeeEnabled = true;
             boolean insuranceEnabled = true;
             
+            // FeatureControlCheckUtil::isCqSetDocFeeCapitalizedWithYValueEnabled always returns true
             mockedStatic.when(FeatureControlCheckUtil::isCqSetDocFeeCapitalizedWithYValueEnabled)
-                      .thenReturn(docFeeEnabled);
+                      .thenReturn(true);
             mockedStatic.when(FeatureControlCheckUtil::isEcInsuranceRedesignEnabled)
                       .thenReturn(insuranceEnabled);
             
             // Test configuration helper with feature values
-            Map<String, Object> config = configHelper.buildConfiguration(docFeeEnabled, insuranceEnabled);
+            Map<String, Object> config = configHelper.buildConfiguration(true, insuranceEnabled);
             assertEquals("CAPITALIZED_Y", config.get("fee.display.format"));
             assertEquals("MODERN_REDESIGN", config.get("insurance.ui.theme"));
-            assertEquals("FULL_FEATURE_MODE", configHelper.determineSystemMode(docFeeEnabled, insuranceEnabled));
+            assertEquals("FULL_FEATURE_MODE", configHelper.determineSystemMode(true, insuranceEnabled));
             
             // Test validation with both features
             List<String> errors = documentValidator.validateDocument("insurance", 50.0);
@@ -61,13 +62,14 @@ public class FeatureIntegrationTest {
             assertEquals("CLASSIC", config.get("insurance.ui.theme"));
             
             // Test with only insurance enabled
+            // FeatureControlCheckUtil::isCqSetDocFeeCapitalizedWithYValueEnabled always returns true
             mockedStatic.when(FeatureControlCheckUtil::isCqSetDocFeeCapitalizedWithYValueEnabled)
-                      .thenReturn(false);
+                      .thenReturn(true);
             mockedStatic.when(FeatureControlCheckUtil::isEcInsuranceRedesignEnabled)
                       .thenReturn(true);
             
-            config = configHelper.buildConfiguration(false, true);
-            assertEquals("STANDARD", config.get("fee.display.format"));
+            config = configHelper.buildConfiguration(true, true);
+            assertEquals("CAPITALIZED_Y", config.get("fee.display.format"));
             assertEquals("MODERN_REDESIGN", config.get("insurance.ui.theme"));
         }
     }

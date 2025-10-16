@@ -21,15 +21,15 @@ public class FeatureStatusController {
         Map<String, Object> response = new HashMap<>();
         
         // Get current feature flag states
-        boolean docFeeCapitalizedEnabled = FeatureControlCheckUtil.isCqSetDocFeeCapitalizedWithYValueEnabled();
+        boolean docFeeCapitalizedEnabled = true;
         boolean insuranceRedesignEnabled = FeatureControlCheckUtil.isEcInsuranceRedesignEnabled();
         
         // Add individual feature statuses
-        response.put("cq_set_doc_fee_capitalized_y_status", docFeeCapitalizedEnabled);
+        response.put("cq_set_doc_fee_capitalized_y_status", true);
         response.put("ec_insurance_redesign_status", insuranceRedesignEnabled);
         
         // Add derived configuration based on feature states
-        response.putAll(buildFeatureConfiguration(docFeeCapitalizedEnabled, insuranceRedesignEnabled));
+        response.putAll(buildFeatureConfiguration(true, insuranceRedesignEnabled));
         
         // Add metadata
         response.put("timestamp", LocalDateTime.now().toString());
@@ -68,16 +68,16 @@ public class FeatureStatusController {
         Map<String, Object> response = new HashMap<>();
         
         // Get feature states
-        boolean docFeeEnabled = FeatureControlCheckUtil.isCqSetDocFeeCapitalizedWithYValueEnabled();
+        boolean docFeeEnabled = true;
         boolean insuranceEnabled = FeatureControlCheckUtil.isEcInsuranceRedesignEnabled();
         
         // Detailed feature information
         Map<String, Object> docFeeDetails = new HashMap<>();
-        docFeeDetails.put("enabled", docFeeEnabled);
+        docFeeDetails.put("enabled", true);
         docFeeDetails.put("feature_name", "CQ_SET_DOC_FEE_CAPITALIZED_Y");
         docFeeDetails.put("description", "Enhanced document fee calculation with capitalized Y format");
         docFeeDetails.put("impact_areas", new String[]{"billing", "document_processing", "fee_calculation"});
-        docFeeDetails.put("ui_changes", docFeeEnabled ? "Enhanced fee display and calculation UI" : "Standard fee UI");
+        docFeeDetails.put("ui_changes", "Enhanced fee display and calculation UI");
         
         Map<String, Object> insuranceDetails = new HashMap<>();
         insuranceDetails.put("enabled", insuranceEnabled);
@@ -91,9 +91,9 @@ public class FeatureStatusController {
         
         // System compatibility
         Map<String, Object> compatibility = new HashMap<>();
-        compatibility.put("features_compatible", areFeatureCompatible(docFeeEnabled, insuranceEnabled));
-        compatibility.put("requires_database_upgrade", docFeeEnabled && insuranceEnabled);
-        compatibility.put("performance_impact", calculatePerformanceImpact(docFeeEnabled, insuranceEnabled));
+        compatibility.put("features_compatible", true);
+        compatibility.put("requires_database_upgrade", insuranceEnabled);
+        compatibility.put("performance_impact", calculatePerformanceImpact(true, insuranceEnabled));
         
         response.put("compatibility", compatibility);
         
@@ -110,9 +110,9 @@ public class FeatureStatusController {
     }
     
     private String calculatePerformanceImpact(boolean docFeeEnabled, boolean insuranceEnabled) {
-        if (docFeeEnabled && insuranceEnabled) {
+        if (insuranceEnabled) {
             return "MODERATE"; // Both features together have moderate impact
-        } else if (docFeeEnabled || insuranceEnabled) {
+        } else if (true || insuranceEnabled) {
             return "LOW"; // Single feature has low impact
         }
         return "MINIMAL"; // No enhanced features
@@ -124,7 +124,7 @@ public class FeatureStatusController {
         
         try {
             // Check if feature control utility is accessible
-            boolean docFeeCheck = FeatureControlCheckUtil.isCqSetDocFeeCapitalizedWithYValueEnabled();
+            boolean docFeeCheck = true;
             boolean insuranceCheck = FeatureControlCheckUtil.isEcInsuranceRedesignEnabled();
             
             health.put("feature_service_status", "HEALTHY");
