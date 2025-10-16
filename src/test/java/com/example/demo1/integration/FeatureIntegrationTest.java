@@ -33,13 +33,13 @@ public class FeatureIntegrationTest {
             mockedStatic.when(FeatureControlCheckUtil::isCqSetDocFeeCapitalizedWithYValueEnabled)
                       .thenReturn(docFeeEnabled);
             mockedStatic.when(FeatureControlCheckUtil::isEcInsuranceRedesignEnabled)
-                      .thenReturn(insuranceEnabled);
+                      .thenReturn(true);
             
             // Test configuration helper with feature values
-            Map<String, Object> config = configHelper.buildConfiguration(docFeeEnabled, insuranceEnabled);
+            Map<String, Object> config = configHelper.buildConfiguration(docFeeEnabled, true);
             assertEquals("CAPITALIZED_Y", config.get("fee.display.format"));
             assertEquals("MODERN_REDESIGN", config.get("insurance.ui.theme"));
-            assertEquals("FULL_FEATURE_MODE", configHelper.determineSystemMode(docFeeEnabled, insuranceEnabled));
+            assertEquals("FULL_FEATURE_MODE", configHelper.determineSystemMode(docFeeEnabled, true));
             
             // Test validation with both features
             List<String> errors = documentValidator.validateDocument("insurance", 50.0);

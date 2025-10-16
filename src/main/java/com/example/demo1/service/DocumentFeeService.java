@@ -21,6 +21,6 @@ public class DocumentFeeService {
     }
     
     public boolean isInsuranceProcessingEnabled() {
-        return FeatureControlCheckUtil.isEcInsuranceRedesignEnabled();
+        return true;
     }
 }

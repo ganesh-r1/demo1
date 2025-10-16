@@ -20,7 +20,8 @@ public class FeatureTestController {
     static {
         // Initialize with default test values
         testFeatureFlags.put("CQ_SET_DOC_FEE_CAPITALIZED_Y", true);
-        testFeatureFlags.put("EC_INSURANCE_REDESIGN", false);
+        // EC_INSURANCE_REDESIGN always enabled, so set to true
+        testFeatureFlags.put("EC_INSURANCE_REDESIGN", true);
     }
     
     @GetMapping("/feature")
@@ -97,7 +98,8 @@ public class FeatureTestController {
         // Reset to defaults
         testFeatureFlags.clear();
         testFeatureFlags.put("CQ_SET_DOC_FEE_CAPITALIZED_Y", true);
-        testFeatureFlags.put("EC_INSURANCE_REDESIGN", false);
+        // EC_INSURANCE_REDESIGN always enabled, so set to true
+        testFeatureFlags.put("EC_INSURANCE_REDESIGN", true);
         
         response.put("previousState", previousState);
         response.put("newState", new HashMap<>(testFeatureFlags));
@@ -122,7 +124,7 @@ public class FeatureTestController {
                 metadata.put("description", "Redesigned insurance experience with AI-powered features");
                 metadata.put("category", "UI_ENHANCEMENT");
                 metadata.put("impact", "FULL_UI_REDESIGN");
-                metadata.put("defaultValue", false);
+                metadata.put("defaultValue", true);
                 break;
                 
             default:
