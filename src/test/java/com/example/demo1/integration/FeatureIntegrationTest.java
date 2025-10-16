@@ -32,14 +32,14 @@ public class FeatureIntegrationTest {
             
             mockedStatic.when(FeatureControlCheckUtil::isCqSetDocFeeCapitalizedWithYValueEnabled)
                       .thenReturn(docFeeEnabled);
-            mockedStatic.when(FeatureControlCheckUtil::isEcInsuranceRedesignEnabled)
-                      .thenReturn(insuranceEnabled);
+            
+            // Feature flag EC_INSURANCE_REDESIGN always true, so no need to mock
             
             // Test configuration helper with feature values
-            Map<String, Object> config = configHelper.buildConfiguration(docFeeEnabled, insuranceEnabled);
+            Map<String, Object> config = configHelper.buildConfiguration(docFeeEnabled, true);
             assertEquals("CAPITALIZED_Y", config.get("fee.display.format"));
             assertEquals("MODERN_REDESIGN", config.get("insurance.ui.theme"));
-            assertEquals("FULL_FEATURE_MODE", configHelper.determineSystemMode(docFeeEnabled, insuranceEnabled));
+            assertEquals("FULL_FEATURE_MODE", configHelper.determineSystemMode(docFeeEnabled, true));
             
             // Test validation with both features
             List<String> errors = documentValidator.validateDocument("insurance", 50.0);
@@ -53,18 +53,14 @@ public class FeatureIntegrationTest {
             // Test with only doc fee enabled
             mockedStatic.when(FeatureControlCheckUtil::isCqSetDocFeeCapitalizedWithYValueEnabled)
                       .thenReturn(true);
-            mockedStatic.when(FeatureControlCheckUtil::isEcInsuranceRedesignEnabled)
-                      .thenReturn(false);
             
-            Map<String, Object> config = configHelper.buildConfiguration(true, false);
+            Map<String, Object> config = configHelper.buildConfiguration(true, true);
             assertEquals("CAPITALIZED_Y", config.get("fee.display.format"));
-            assertEquals("CLASSIC", config.get("insurance.ui.theme"));
+            assertEquals("MODERN_REDESIGN", config.get("insurance.ui.theme"));
             
             // Test with only insurance enabled
             mockedStatic.when(FeatureControlCheckUtil::isCqSetDocFeeCapitalizedWithYValueEnabled)
                       .thenReturn(false);
-            mockedStatic.when(FeatureControlCheckUtil::isEcInsuranceRedesignEnabled)
-                      .thenReturn(true);
             
             config = configHelper.buildConfiguration(false, true);
             assertEquals("STANDARD", config.get("fee.display.format"));
@@ -77,8 +73,8 @@ public class FeatureIntegrationTest {
         try (MockedStatic<FeatureControlCheckUtil> mockedStatic = Mockito.mockStatic(FeatureControlCheckUtil.class)) {
             mockedStatic.when(FeatureControlCheckUtil::isCqSetDocFeeCapitalizedWithYValueEnabled)
                       .thenReturn(true);
-            mockedStatic.when(FeatureControlCheckUtil::isEcInsuranceRedesignEnabled)
-                      .thenReturn(true);
+            
+            // Feature flag EC_INSURANCE_REDESIGN always true, so no need to mock
             
             // Test validation with legacy document type (should fail with both features)
             List<String> errors = documentValidator.validateDocument("legacy", 1000.0);

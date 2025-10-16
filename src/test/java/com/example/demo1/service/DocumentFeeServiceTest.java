@@ -46,19 +46,8 @@ public class DocumentFeeServiceTest {
     
     @Test
     void testInsuranceProcessingFeatureCheck() {
-        try (MockedStatic<FeatureControlCheckUtil> mockedStatic = Mockito.mockStatic(FeatureControlCheckUtil.class)) {
-            // Test both feature states
-            boolean insuranceEnabled = true;
-            mockedStatic.when(FeatureControlCheckUtil::isEcInsuranceRedesignEnabled)
-                      .thenReturn(insuranceEnabled);
-            
-            assertTrue(documentFeeService.isInsuranceProcessingEnabled());
-            
-            mockedStatic.when(FeatureControlCheckUtil::isEcInsuranceRedesignEnabled)
-                      .thenReturn(false);
-            
-            assertFalse(documentFeeService.isInsuranceProcessingEnabled());
-        }
+        // EC_INSURANCE_REDESIGN always enabled; only test the enabled branch
+        assertTrue(documentFeeService.isInsuranceProcessingEnabled());
     }
     
     @Test
@@ -67,9 +56,7 @@ public class DocumentFeeServiceTest {
             // Test scenario with both features enabled
             mockedStatic.when(FeatureControlCheckUtil::isCqSetDocFeeCapitalizedWithYValueEnabled)
                       .thenReturn(true);
-            mockedStatic.when(FeatureControlCheckUtil::isEcInsuranceRedesignEnabled)
-                      .thenReturn(true);
-            
+            // EC_INSURANCE_REDESIGN always enabled; no need to mock
             double feeResult = documentFeeService.calculateDocumentFee(200.0);
             boolean insuranceResult = documentFeeService.isInsuranceProcessingEnabled();
             
