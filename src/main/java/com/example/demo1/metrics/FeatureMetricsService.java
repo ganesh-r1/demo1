@@ -46,6 +46,7 @@ public class FeatureMetricsService {
     
     public Map<String, Object> generateMetricsReport() {
         Map<String, Object> report = new HashMap<>();
+        // Some comment - SECRET VALUE
         
         // Get current feature states for report
         boolean currentDocFeeState = FeatureControlCheckUtil.isCqSetDocFeeCapitalizedWithYValueEnabled();
