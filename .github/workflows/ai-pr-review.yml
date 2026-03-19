@@ -1,0 +1,50 @@
+name: AI PR Reviewer
+
+# Trigger this workflow whenever a PR is opened or updated
+on:
+  pull_request:
+    types: [opened, synchronize]
+  workflow_dispatch:
+    inputs:
+      pr_number:
+        description: 'Pull Request Number to review'
+        required: true
+        type: string
+
+jobs:
+  review:
+    runs-on: ubuntu-latest
+    # Give the default token permission to read code and write PR comments
+    permissions:
+      contents: read
+      pull-requests: write
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js (Required for npx/MCP servers)
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install Python dependencies
+        run: pip install mcp langchain-mcp-adapters langgraph langchain-anthropic
+
+      - name: Run LangGraph Agent
+        env:
+          GITHUB_PERSONAL_ACCESS_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+        run: |
+          # Use manual input if provided, otherwise use the event PR number
+          PR_NUM="${{ github.event.inputs.pr_number || github.event.pull_request.number }}"
+          
+          python agentic_reviewer.py \
+            ${{ github.repository }} \
+            $PR_NUM \
+            ${{ github.workspace }}
